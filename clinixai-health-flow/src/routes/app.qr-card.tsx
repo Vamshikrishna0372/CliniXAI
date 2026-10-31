@@ -41,7 +41,7 @@ export const Route = createFileRoute("/app/qr-card")({
   errorComponent: QRCardRouteError,
 });
 
-function QRCardRouteError({ error, reset }: { error: Error; reset: () => void }) {
+function QRCardRouteError({ error, reset }: { error: any; reset: () => void }) {
   return (
     <div className="space-y-6">
       <PageHeader

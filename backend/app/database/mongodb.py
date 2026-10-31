@@ -128,8 +128,10 @@ async def save_in_memory_snapshot(db: Optional[AsyncIOMotorDatabase] = None) -> 
             # Never overwrite a populated disk snapshot with an empty list
             if len(final_docs) == 0 and file_path.exists() and file_path.stat().st_size > 5:
                 continue
-            with open(file_path, "w", encoding="utf-8") as f:
+            tmp_path = file_path.with_suffix(".tmp")
+            with open(tmp_path, "w", encoding="utf-8") as f:
                 json.dump(final_docs, f, default=str, indent=2)
+            tmp_path.replace(file_path)
         logger.debug("Persisted in-memory database snapshot to disk.")
     except Exception as e:
         logger.warning(f"Could not persist in-memory database snapshot: {e}")
@@ -159,8 +161,8 @@ async def restore_in_memory_snapshot(db: AsyncIOMotorDatabase) -> bool:
         "documents": "document_id",
         "follow_ups": "follow_up_id",
     }
-    try:
-        for col_name in ALL_COLLECTIONS:
+    for col_name in ALL_COLLECTIONS:
+        try:
             file_path = SNAPSHOT_DIR / f"{col_name}.json"
             if file_path.exists():
                 with open(file_path, "r", encoding="utf-8") as f:
@@ -206,10 +208,10 @@ async def restore_in_memory_snapshot(db: AsyncIOMotorDatabase) -> bool:
                                     )
                                     if res.upserted_id is not None:
                                         restored = True
-        if restored:
-            logger.info("Restored persisted database snapshot from disk (atomic $setOnInsert, live records protected).")
-    except Exception as e:
-        logger.warning(f"Failed to restore database snapshot: {e}")
+        except Exception as col_err:
+            logger.warning(f"Failed to restore collection {col_name} from snapshot: {col_err}")
+    if restored:
+        logger.info("Restored persisted database snapshot from disk (atomic $setOnInsert, live records protected).")
     return restored
 
 

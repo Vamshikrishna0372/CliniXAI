@@ -15,7 +15,7 @@ import { ThemeProvider } from "@/lib/theme-context";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage, ServerErrorPage } from "@/components/dashboard/states";
 
-function ErrorBoundary({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorBoundary({ error, reset }: { error: any; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     console.error(error);

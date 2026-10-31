@@ -167,7 +167,8 @@ async def test_record_backed_ai_analysis_pipeline(async_client: AsyncClient):
     review_req = {
         "decision": "accepted",
         "clinical_interpretation": "Tumor lesion confirmed in high-activation region. Recommend follow-up neuro-imaging.",
-        "notes": "Patient advised regarding neurosurgical consultation."
+        "notes": "Patient advised regarding neurosurgical consultation.",
+        "release_to_patient": True,
     }
     rev_res = await async_client.post(f"/api/v1/ai-analyses/{analysis_id}/review", headers=headers, json=review_req)
     assert rev_res.status_code == 200, f"Doctor review failed: {rev_res.text}"

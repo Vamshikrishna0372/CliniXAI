@@ -16,7 +16,7 @@ export const Route = createFileRoute("/app")({
   errorComponent: AppShellRouteError,
 });
 
-function AppShellRouteError({ error, reset }: { error: Error; reset: () => void }) {
+function AppShellRouteError({ error, reset }: { error: any; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     console.error("[AppShell Error]", error);
