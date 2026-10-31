@@ -110,24 +110,34 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         """Parses comma-separated strings or JSON arrays into a list of allowed CORS origin URLs."""
+        parsed: List[str] = []
         if isinstance(v, str):
             if v.startswith("[") and v.endswith("]"):
                 import json
                 try:
-                    return json.loads(v)
+                    parsed = json.loads(v)
                 except Exception:
-                    pass
-            return [item.strip() for item in v.split(",") if item.strip()]
+                    parsed = []
+            if not parsed:
+                parsed = [item.strip() for item in v.split(",") if item.strip()]
         elif isinstance(v, list):
-            return v
-        return [
-            "http://localhost:8080",
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "http://localhost:3100",
-            "http://127.0.0.1:3100",
-            "https://clini-xai.vercel.app",
-        ]
+            parsed = list(v)
+        else:
+            parsed = [
+                "http://localhost:8080",
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://localhost:3100",
+                "http://127.0.0.1:3100",
+                "https://clini-xai.vercel.app",
+            ]
+
+        # Always ensure canonical production frontend is allowed
+        canonical_prod = "https://clini-xai.vercel.app"
+        if canonical_prod not in parsed and "*" not in parsed:
+            parsed.append(canonical_prod)
+
+        return parsed
 
     @property
     def is_production(self) -> bool:
