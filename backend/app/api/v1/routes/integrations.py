@@ -25,25 +25,6 @@ from app.integrations.google_calendar import GoogleCalendarService
 router = APIRouter(tags=["External Integrations"])
 
 
-# ── Google OAuth Endpoint ──────────────────────────────────────────────────
-
-@router.post(
-    "/auth/google",
-    response_model=GoogleAuthResponse,
-    summary="Authenticate via Google OAuth / OpenID Connect",
-)
-async def google_auth(
-    request: GoogleAuthRequest,
-    db: AsyncIOMotorDatabase = Depends(get_database),
-):
-    """
-    Exchanges verified Google OIDC ID token for CliniXAI JWT Access & Refresh Tokens.
-    Performs safe account linking and default PATIENT role assignment for new users.
-    """
-    result = await GoogleAuthService.authenticate_google_user(db, request.id_token)
-    return GoogleAuthResponse(**result)
-
-
 # ── Google Calendar Endpoints ──────────────────────────────────────────────
 
 @router.post(

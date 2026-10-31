@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,20 @@ function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlErr = params.get("error");
+      if (urlErr) {
+        setError(decodeURIComponent(urlErr.replace(/\+/g, " ")));
+      }
+      if (params.get("google_success") === "true") {
+        toast.success("Google Sign-In successful!");
+        navigate({ to: "/app" });
+      }
+    }
+  }, [navigate]);
 
   const emailValid = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit = email.trim().length > 0 && emailValid && password.length >= 6 && !loading;

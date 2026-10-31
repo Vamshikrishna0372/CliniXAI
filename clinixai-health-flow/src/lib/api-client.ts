@@ -3,28 +3,59 @@
  * Centralizes HTTP requests, Authorization headers, Base URL, Timeouts, and Error Handling.
  */
 
-const DEFAULT_BASE_URL = "http://127.0.0.1:8000/api/v1";
+const LOCAL_API_URL = "http://localhost:8000/api/v1";
+const PROD_API_URL = "https://clinixai-2qfy.onrender.com/api/v1";
 
+/**
+ * Dynamically resolves the API base URL depending on environment and host.
+ * 
+ * Guarantees:
+ * - Public / Cloud deployments (Vercel, custom domain) NEVER call localhost or 127.0.0.1.
+ * - Local development (localhost, 127.0.0.1) ALWAYS calls local backend (port 8000).
+ * - Zero silent fallback to user's computer in production.
+ */
 export function getApiBaseUrl(): string {
-  if (typeof window !== "undefined" && import.meta.env?.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
+  // Normalize any explicit environment variable
+  const rawEnv = (import.meta.env?.VITE_API_URL || import.meta.env?.VITE_API_BASE_URL as string | undefined)?.trim();
+  const normalizedEnv = rawEnv
+    ? (rawEnv.replace(/\/+$/, "").endsWith("/api/v1") ? rawEnv.replace(/\/+$/, "") : `${rawEnv.replace(/\/+$/, "")}/api/v1`)
+    : null;
+
+  // 1. Browser Runtime Detection (Authoritative Ground Truth)
+  if (typeof window !== "undefined" && window.location?.hostname) {
+    const hostname = window.location.hostname.toLowerCase();
+
+    // Explicit local development check
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      if (normalizedEnv && (normalizedEnv.includes("localhost") || normalizedEnv.includes("127.0.0.1"))) {
+        return normalizedEnv;
+      }
+      return LOCAL_API_URL;
+    }
+
+    // Public / Cloud Deployment (clini-xai.vercel.app, preview branches, custom domains)
+    // STRICT: NEVER allow localhost or 127.0.0.1 to be returned in a deployed web browser!
+    if (normalizedEnv && !normalizedEnv.includes("localhost") && !normalizedEnv.includes("127.0.0.1")) {
+      return normalizedEnv;
+    }
+    return PROD_API_URL;
   }
-  return DEFAULT_BASE_URL;
+
+  // 2. Build-Time / SSR Fallback
+  if (import.meta.env?.PROD) {
+    return PROD_API_URL;
+  }
+  if (normalizedEnv && !normalizedEnv.includes("localhost") && !normalizedEnv.includes("127.0.0.1")) {
+    return normalizedEnv;
+  }
+  return LOCAL_API_URL;
 }
 
 export function getWebSocketUrl(_token?: string): string {
-  let apiBase = getApiBaseUrl().replace(/\/+$/, "");
-  if (typeof window !== "undefined") {
-    if (apiBase.startsWith("/")) {
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      apiBase = `${protocol}//${window.location.host}${apiBase}`;
-    } else {
-      apiBase = apiBase.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
-    }
-  } else {
-    apiBase = apiBase.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
-  }
-  return `${apiBase}/notifications/ws`;
+  const apiBase = getApiBaseUrl().replace(/\/+$/, "");
+  const wsProtocol = apiBase.startsWith("https:") ? "wss:" : "ws:";
+  const cleanBase = apiBase.replace(/^https?:/i, "").replace(/\/+$/, "");
+  return `${wsProtocol}${cleanBase}/notifications/ws`;
 }
 
 export interface ApiErrorDetail {

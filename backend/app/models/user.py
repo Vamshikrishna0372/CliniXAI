@@ -61,6 +61,7 @@ class UserInDB(BaseModel):
     role: UserRole
     auth_provider: AuthProvider = AuthProvider.LOCAL
     google_sub: Optional[str] = None
+    google_id: Optional[str] = None
     email_verified: bool = False
     account_status: AccountStatus = AccountStatus.ACTIVE
     

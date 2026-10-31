@@ -1,30 +1,190 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { getApiBaseUrl } from "@/lib/api-client";
+import { useNavigate } from "@tanstack/react-router";
 
-export function GoogleButton({ label = "Continue with Google", onDone }: { label?: string; onDone?: () => void }) {
+declare global {
+  interface Window {
+    google?: any;
+    _googleGisScriptLoaded?: boolean;
+  }
+}
+
+export function GoogleButton({
+  label = "Continue with Google",
+  onDone,
+}: {
+  label?: string;
+  onDone?: () => void;
+}) {
+  const navigate = useNavigate();
+  const { signInWithGoogle } = useAuth();
   const [loading, setLoading] = useState(false);
-  const click = async () => {
+  const [gisReady, setGisReady] = useState(false);
+  const googleBtnContainerRef = useRef<HTMLDivElement>(null);
+
+  const googleClientId =
+    (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim() ||
+    "324988442926-buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com";
+
+  const handleCredentialResponse = useCallback(
+    async (response: { credential?: string }) => {
+      if (!response.credential) {
+        toast.error("Google authentication failed: no credential received.");
+        return;
+      }
+      setLoading(true);
+      try {
+        const user = await signInWithGoogle(response.credential);
+        toast.success(`Welcome, ${user.fullName || user.firstName}!`);
+        onDone?.();
+        navigate({ to: "/app" });
+      } catch (err: any) {
+        const msg = err?.message || "Google sign-in failed. Please try again.";
+        toast.error(msg);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [signInWithGoogle, onDone, navigate]
+  );
+
+  const initiateOAuthRedirect = useCallback(() => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    setLoading(false);
-    toast.info("Google Sign-In will be enabled once the backend is connected.");
-    onDone?.();
+    try {
+      const apiBase = getApiBaseUrl();
+      window.location.href = `${apiBase}/auth/google/login`;
+    } catch {
+      setLoading(false);
+      toast.error("Unable to initiate Google sign-in redirect.");
+    }
+  }, []);
+
+  const handleCustomButtonClick = () => {
+    if (loading) return;
+
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt((notification: any) => {
+        if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
+          // If One-Tap prompt is suppressed or already dismissed, use OAuth redirect
+          initiateOAuthRedirect();
+        }
+      });
+    } else {
+      initiateOAuthRedirect();
+    }
   };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const initGis = () => {
+      if (!isMounted || !window.google?.accounts?.id) return;
+      try {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+
+        if (googleBtnContainerRef.current) {
+          googleBtnContainerRef.current.innerHTML = "";
+          window.google.accounts.id.renderButton(googleBtnContainerRef.current, {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "continue_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: "100%",
+          });
+        }
+        setGisReady(true);
+      } catch (err) {
+        // Silently catch GIS init errors and rely on accessible button
+        setGisReady(false);
+      }
+    };
+
+    if (window.google?.accounts?.id) {
+      initGis();
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const existingScript = document.getElementById("google-gis-client");
+    if (!existingScript) {
+      const script = document.createElement("script");
+      script.id = "google-gis-client";
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        window._googleGisScriptLoaded = true;
+        initGis();
+      };
+      script.onerror = () => {
+        setGisReady(false);
+      };
+      document.head.appendChild(script);
+    } else {
+      existingScript.addEventListener("load", initGis);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [googleClientId, handleCredentialResponse]);
+
   return (
-    <Button type="button" variant="outline" className="h-11 w-full gap-3" onClick={click} disabled={loading}>
-      {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <svg className="h-4 w-4" viewBox="0 0 48 48" aria-hidden>
-          <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z" />
-          <path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 7.1 29.5 5 24 5 16.3 5 9.7 9 6.3 14.7z" />
-          <path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.3l-6.3-5.2C29.3 35.1 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.5l-6.5 5C9.5 39.9 16.2 44 24 44z" />
-          <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.5l6.3 5.2C41.4 35.5 44 30.2 44 24c0-1.2-.1-2.3-.4-3.5z" />
-        </svg>
+    <div className="w-full space-y-2">
+      {/* Container for official Google Identity Services rendered button */}
+      <div
+        ref={googleBtnContainerRef}
+        className={`w-full flex justify-center ${gisReady ? "block" : "hidden"}`}
+        style={{ minHeight: "44px" }}
+      />
+
+      {/* Accessible fallback & interactive button matching CliniXAI theme */}
+      {!gisReady && (
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 w-full gap-3 border-border hover:bg-muted/40 transition-colors"
+          onClick={handleCustomButtonClick}
+          disabled={loading}
+          aria-label={label}
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          ) : (
+            <svg className="h-4 w-4 shrink-0" viewBox="0 0 48 48" aria-hidden>
+              <path
+                fill="#FFC107"
+                d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"
+              />
+              <path
+                fill="#FF3D00"
+                d="m6.3 14.7 6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 7.1 29.5 5 24 5 16.3 5 9.7 9 6.3 14.7z"
+              />
+              <path
+                fill="#4CAF50"
+                d="M24 44c5.3 0 10.1-2 13.7-5.3l-6.3-5.2C29.3 35.1 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.5l-6.5 5C9.5 39.9 16.2 44 24 44z"
+              />
+              <path
+                fill="#1976D2"
+                d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.5l6.3 5.2C41.4 35.5 44 30.2 44 24c0-1.2-.1-2.3-.4-3.5z"
+              />
+            </svg>
+          )}
+          <span>{loading ? "Connecting to Google..." : label}</span>
+        </Button>
       )}
-      {label}
-    </Button>
+    </div>
   );
 }

@@ -4,11 +4,17 @@ from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, EmailStr, Field
 
 
+from app.schemas.auth import UserResponse
+
+
 # ── Google OAuth Schemas ───────────────────────────────────────────────────
 
 class GoogleAuthRequest(BaseModel):
-    """Google Sign-In request payload containing OpenID Connect ID token."""
-    id_token: str = Field(..., description="Google OIDC ID Token obtained from Google Identity Services")
+    """Google Sign-In request payload containing OpenID Connect ID token, credential, or auth code."""
+    id_token: Optional[str] = Field(None, description="Google OIDC ID Token obtained from Google Identity Services")
+    credential: Optional[str] = Field(None, description="Google credential JWT from GIS callback")
+    code: Optional[str] = Field(None, description="OAuth authorization code if using code flow")
+    redirect_uri: Optional[str] = Field(None, description="OAuth redirect URI matching the authorization request")
 
 
 class GoogleAuthResponse(BaseModel):
@@ -20,6 +26,8 @@ class GoogleAuthResponse(BaseModel):
     role: str
     email: str
     full_name: str
+    expires_in: int = 1800
+    user: Optional[UserResponse] = None
 
 
 # ── Google Calendar Schemas ────────────────────────────────────────────────

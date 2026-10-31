@@ -70,6 +70,7 @@ type AuthState = {
   isAuthenticated: boolean;
   hydrated: boolean;
   signIn: (email: string, password: string) => Promise<User>;
+  signInWithGoogle: (idTokenOrCredential: string) => Promise<User>;
   register: (data: { firstName: string; lastName: string; email: string; password: string }) => Promise<User>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<any>;
@@ -98,6 +99,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   const restoreSession = useCallback(async (): Promise<User | null> => {
+    // Check URL parameters for Google OAuth redirect callback tokens
+    if (typeof window !== "undefined") {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlAccessToken = urlParams.get("access_token");
+        const urlRefreshToken = urlParams.get("refresh_token");
+        if (urlAccessToken && urlRefreshToken) {
+          setStoredTokens({ accessToken: urlAccessToken, refreshToken: urlRefreshToken });
+          // Strip sensitive tokens from URL history cleanly
+          urlParams.delete("access_token");
+          urlParams.delete("refresh_token");
+          urlParams.delete("google_success");
+          const remainingQuery = urlParams.toString();
+          const cleanPath = window.location.pathname + (remainingQuery ? `?${remainingQuery}` : "");
+          window.history.replaceState({}, document.title, cleanPath);
+        }
+      } catch {
+        // Safe fallback for SSR / non-browser execution
+      }
+    }
+
     const tokens = getStoredTokens();
     if (!tokens?.accessToken) {
       setUser(null);
@@ -129,6 +151,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await apiClient.post<BackendTokenResponse>(
       "/auth/login",
       { email, password },
+      { skipAuth: true }
+    );
+    setStoredTokens({ accessToken: res.access_token, refreshToken: res.refresh_token });
+    const parsedUser = parseUserFromBackend(res.user);
+    setUser(parsedUser);
+    return parsedUser;
+  }, []);
+
+  const signInWithGoogle = useCallback(async (idTokenOrCredential: string): Promise<User> => {
+    const res = await apiClient.post<BackendTokenResponse>(
+      "/auth/google",
+      { id_token: idTokenOrCredential, credential: idTokenOrCredential },
       { skipAuth: true }
     );
     setStoredTokens({ accessToken: res.access_token, refreshToken: res.refresh_token });
@@ -201,6 +235,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: !!user,
       hydrated,
       signIn,
+      signInWithGoogle,
       register,
       signOut,
       forgotPassword,
@@ -209,7 +244,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       refreshSession: restoreSession,
       switchRole,
     }),
-    [user, hydrated, signIn, register, signOut, forgotPassword, resetPassword, confirmEmail, restoreSession, switchRole]
+    [user, hydrated, signIn, signInWithGoogle, register, signOut, forgotPassword, resetPassword, confirmEmail, restoreSession, switchRole]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

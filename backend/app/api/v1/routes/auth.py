@@ -1,7 +1,12 @@
 """Authentication API Version 1 Route Handlers."""
 
 from typing import Any, Dict, Optional
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi.responses import RedirectResponse
+from app.core.logging import logger
+from app.core.exceptions import AppValidationError
+from app.schemas.integrations import GoogleAuthRequest, GoogleAuthResponse
+from app.integrations.google_auth import GoogleAuthService
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.core.config import settings
@@ -50,8 +55,6 @@ async def _build_user_response(db: AsyncIOMotorDatabase, user: UserInDB) -> User
             data["doctor_id"] = doctor.get("doctor_id")
     return UserResponse(**data)
 
-
-from fastapi import APIRouter, Depends, Request, Response, status
 
 @router.post(
     "/register",
@@ -141,6 +144,182 @@ async def login(
         expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         user=user_resp,
     )
+
+
+
+
+def _get_frontend_url(request: Request) -> str:
+    """Dynamically resolves frontend origin based on request headers / environment."""
+    origin = request.headers.get("origin") or request.headers.get("referer")
+    if origin:
+        if "clini-xai.vercel.app" in origin or "vercel.app" in origin:
+            return "https://clini-xai.vercel.app"
+        if "localhost:3100" in origin or "127.0.0.1:3100" in origin:
+            return "http://localhost:3100"
+    host = request.headers.get("host", "").lower()
+    if "onrender.com" in host or "clinixai" in host:
+        return "https://clini-xai.vercel.app"
+    return settings.FRONTEND_URL or "http://localhost:3100"
+
+
+@router.post(
+    "/google",
+    response_model=GoogleAuthResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Authenticate via Google OAuth / OpenID Connect",
+    description="Exchanges Google ID token, credential, or authorization code for CliniXAI tokens and Patient session.",
+)
+async def google_auth_post(
+    request: GoogleAuthRequest,
+    response: Response,
+    db: AsyncIOMotorDatabase = Depends(get_database),
+) -> GoogleAuthResponse:
+    """Authenticates via Google OIDC ID token or exchanges authorization code."""
+    id_token = request.id_token or request.credential
+    if not id_token and request.code:
+        token_data = await GoogleAuthService.exchange_code_for_tokens(
+            request.code, request.redirect_uri
+        )
+        id_token = token_data.get("id_token")
+
+    if not id_token:
+        raise AppValidationError("Missing Google ID token, credential, or authorization code.")
+
+    result = await GoogleAuthService.authenticate_google_user(db, id_token)
+
+    # Set secure HttpOnly cookies for browser clients
+    response.set_cookie(
+        key="access_token",
+        value=result["access_token"],
+        httponly=True,
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        samesite="lax",
+        secure=not settings.DEBUG,
+        path="/",
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=result["refresh_token"],
+        httponly=True,
+        max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
+        samesite="lax",
+        secure=not settings.DEBUG,
+        path="/",
+    )
+
+    return GoogleAuthResponse(**result)
+
+
+@router.post(
+    "/google/callback",
+    response_model=GoogleAuthResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Google OAuth POST Callback Alias",
+    include_in_schema=False,
+)
+async def google_auth_callback_post(
+    request: GoogleAuthRequest,
+    response: Response,
+    db: AsyncIOMotorDatabase = Depends(get_database),
+) -> GoogleAuthResponse:
+    """Alias for POST /auth/google."""
+    return await google_auth_post(request, response, db)
+
+
+@router.get(
+    "/google/callback",
+    summary="Google OAuth Redirect GET Callback",
+    description="Receives authorization code from Google OAuth redirect, issues CliniXAI tokens, and redirects to frontend.",
+)
+async def google_auth_callback_get(
+    request: Request,
+    response: Response,
+    code: Optional[str] = None,
+    error: Optional[str] = None,
+    db: AsyncIOMotorDatabase = Depends(get_database),
+):
+    """Processes browser redirect callback from Google OAuth."""
+    frontend_url = _get_frontend_url(request)
+
+    if error:
+        logger.warning(f"Google OAuth redirect error: {error}")
+        return RedirectResponse(
+            url=f"{frontend_url}/auth/login?error=Google+authentication+cancelled+or+failed.",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    if not code:
+        return RedirectResponse(
+            url=f"{frontend_url}/auth/login?error=Missing+authorization+code+from+Google.",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    try:
+        req_redirect_uri = str(request.url).split("?")[0]
+        token_data = await GoogleAuthService.exchange_code_for_tokens(code, req_redirect_uri)
+        id_token = token_data.get("id_token")
+        if not id_token:
+            raise AppValidationError("Google did not return an ID token.")
+
+        result = await GoogleAuthService.authenticate_google_user(db, id_token)
+
+        redirect_target = f"{frontend_url}/auth/login?google_success=true&access_token={result['access_token']}&refresh_token={result['refresh_token']}"
+        redirect_res = RedirectResponse(url=redirect_target, status_code=status.HTTP_303_SEE_OTHER)
+
+        redirect_res.set_cookie(
+            key="access_token",
+            value=result["access_token"],
+            httponly=True,
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            samesite="lax",
+            secure=not settings.DEBUG,
+            path="/",
+        )
+        redirect_res.set_cookie(
+            key="refresh_token",
+            value=result["refresh_token"],
+            httponly=True,
+            max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
+            samesite="lax",
+            secure=not settings.DEBUG,
+            path="/",
+        )
+        return redirect_res
+    except Exception as exc:
+        logger.error(f"Google OAuth callback processing error: {exc}")
+        return RedirectResponse(
+            url=f"{frontend_url}/auth/login?error=Google+sign-in+failed.+Please+try+again.",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+
+@router.get(
+    "/google/login",
+    summary="Initiate Google OAuth Redirect Flow",
+    description="Redirects browser to Google OAuth consent screen with correct client_id, scope, and redirect_uri.",
+)
+async def google_auth_login_redirect(request: Request):
+    """Initiates Google OAuth 2.0 authorization code redirect."""
+    if not settings.GOOGLE_CLIENT_ID:
+        raise AppValidationError("Google Client ID is not configured on the server.")
+
+    host = request.headers.get("host", "").lower()
+    if "onrender.com" in host or "clinixai" in host:
+        redirect_uri = "https://clinixai-2qfy.onrender.com/api/v1/auth/google/callback"
+    else:
+        redirect_uri = settings.GOOGLE_REDIRECT_URI or "http://localhost:8000/api/v1/auth/google/callback"
+
+    from urllib.parse import urlencode
+    params = {
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "redirect_uri": redirect_uri,
+        "response_type": "code",
+        "scope": "openid email profile",
+        "access_type": "offline",
+        "prompt": "select_account",
+    }
+    google_oauth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
+    return RedirectResponse(url=google_oauth_url, status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.post(

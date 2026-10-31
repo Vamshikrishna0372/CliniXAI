@@ -1,6 +1,7 @@
 """Centralized Application Configuration using Pydantic Settings."""
 
 import os
+from pathlib import Path
 from typing import List, Union, Optional
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -33,6 +34,7 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3100",
         "http://localhost:3101",
         "http://127.0.0.1:3101",
+        "https://clini-xai.vercel.app",
     ]
 
     # Logging Settings
@@ -47,10 +49,11 @@ class Settings(BaseSettings):
     RESET_TOKEN_EXPIRE_HOURS: int = 1
 
     # Google OAuth & Calendar Settings (Phase 9)
-    GOOGLE_AUTH_ENABLED: bool = False
+    GOOGLE_AUTH_ENABLED: bool = True
     GOOGLE_CLIENT_ID: Optional[str] = None
     GOOGLE_CLIENT_SECRET: Optional[str] = None
-    GOOGLE_REDIRECT_URI: Optional[str] = "http://localhost:5173/auth/google/callback"
+    GOOGLE_REDIRECT_URI: Optional[str] = "http://localhost:8000/api/v1/auth/google/callback"
+    FRONTEND_URL: str = "http://localhost:3100"
     GOOGLE_CALENDAR_ENABLED: bool = False
     GOOGLE_CALENDAR_REDIRECT_URI: Optional[str] = "http://localhost:5173/calendar/callback"
 
@@ -93,7 +96,11 @@ class Settings(BaseSettings):
     AI_GRADCAM_LAYER: str = "conv5_block3_out"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(
+            str(Path(__file__).resolve().parent.parent.parent / ".env"),
+            ".env",
+            "backend/.env",
+        ),
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",
@@ -113,7 +120,14 @@ class Settings(BaseSettings):
             return [item.strip() for item in v.split(",") if item.strip()]
         elif isinstance(v, list):
             return v
-        return ["http://localhost:8080", "http://localhost:5173", "http://localhost:3000"]
+        return [
+            "http://localhost:8080",
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://localhost:3100",
+            "http://127.0.0.1:3100",
+            "https://clini-xai.vercel.app",
+        ]
 
     @property
     def is_production(self) -> bool:
