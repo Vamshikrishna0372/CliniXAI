@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
     # Google OAuth & Calendar Settings (Phase 9)
     GOOGLE_AUTH_ENABLED: bool = True
-    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_ID: Optional[str] = "324988442926-buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com"
     GOOGLE_CLIENT_SECRET: Optional[str] = None
     GOOGLE_REDIRECT_URI: Optional[str] = "http://localhost:8000/api/v1/auth/google/callback"
     FRONTEND_URL: str = "http://localhost:3100"
