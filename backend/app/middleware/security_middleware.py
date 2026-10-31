@@ -26,7 +26,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com data:",
             "img-src 'self' data: blob: http: https:",
-            "connect-src 'self' http://localhost:8000 http://127.0.0.1:8000 ws://localhost:8000 ws://127.0.0.1:8000 http://localhost:3100 http://127.0.0.1:3100 ws://localhost:3100 ws://127.0.0.1:3100",
+            "connect-src 'self' https://clinixai-2qfy.onrender.com wss://clinixai-2qfy.onrender.com https://clini-xai.vercel.app wss://clini-xai.vercel.app http://localhost:8000 http://127.0.0.1:8000 ws://localhost:8000 ws://127.0.0.1:8000 http://localhost:3100 http://127.0.0.1:3100 ws://localhost:3100 ws://127.0.0.1:3100 https://accounts.google.com https://*.googleapis.com",
             "frame-ancestors 'none'",
             "object-src 'none'",
             "base-uri 'self'",

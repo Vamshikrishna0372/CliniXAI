@@ -170,7 +170,7 @@ export async function refreshTokenMutex(): Promise<AuthTokens | null> {
 }
 
 async function fetchWithTimeout(url: string, options: RequestOptions = {}): Promise<Response> {
-  const { timeoutMs = 30000, _isRetry, skipAuth, ...fetchOptions } = options;
+  const { timeoutMs = 60000, _isRetry, skipAuth, ...fetchOptions } = options;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -185,7 +185,16 @@ async function fetchWithTimeout(url: string, options: RequestOptions = {}): Prom
   } catch (err: any) {
     clearTimeout(timeoutId);
     if (err.name === "AbortError") {
-      throw new ApiError(408, "Request timed out. Please check your network connection.");
+      throw new ApiError(408, "Request timed out. The server may be waking up from sleep; please try again.", { originalError: err.message });
+    }
+    // Auto-retry once for login / health endpoints if backend was sleeping or experiencing transient network latency
+    if (!_isRetry && (url.includes("/auth/login") || url.includes("/health"))) {
+      try {
+        await new Promise((r) => setTimeout(r, 2000));
+        return await fetchWithTimeout(url, { ...options, _isRetry: true, timeoutMs: 60000 });
+      } catch {
+        // Fall through to error
+      }
     }
     throw new ApiError(0, "Network error: Unable to connect to backend server.", { originalError: err.message });
   }

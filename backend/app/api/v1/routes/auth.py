@@ -73,13 +73,15 @@ async def register_patient(
     user_resp = await _build_user_response(db, user)
 
     # Set secure HttpOnly cookies for browser clients
+    cookie_samesite = "none" if not settings.DEBUG else "lax"
+    cookie_secure = not settings.DEBUG
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
     response.set_cookie(
@@ -87,8 +89,8 @@ async def register_patient(
         value=refresh_token,
         httponly=True,
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
 
@@ -118,13 +120,15 @@ async def login(
     user_resp = await _build_user_response(db, user)
 
     # Set secure HttpOnly cookies for browser clients
+    cookie_samesite = "none" if not settings.DEBUG else "lax"
+    cookie_secure = not settings.DEBUG
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
     response.set_cookie(
@@ -132,8 +136,8 @@ async def login(
         value=refresh_token,
         httponly=True,
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
 
@@ -188,13 +192,15 @@ async def google_auth_post(
     result = await GoogleAuthService.authenticate_google_user(db, id_token)
 
     # Set secure HttpOnly cookies for browser clients
+    cookie_samesite = "none" if not settings.DEBUG else "lax"
+    cookie_secure = not settings.DEBUG
     response.set_cookie(
         key="access_token",
         value=result["access_token"],
         httponly=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
     response.set_cookie(
@@ -202,8 +208,8 @@ async def google_auth_post(
         value=result["refresh_token"],
         httponly=True,
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
-        samesite="lax",
-        secure=not settings.DEBUG,
+        samesite=cookie_samesite,
+        secure=cookie_secure,
         path="/",
     )
 
@@ -266,13 +272,15 @@ async def google_auth_callback_get(
         redirect_target = f"{frontend_url}/auth/login?google_success=true&access_token={result['access_token']}&refresh_token={result['refresh_token']}"
         redirect_res = RedirectResponse(url=redirect_target, status_code=status.HTTP_303_SEE_OTHER)
 
+        cookie_samesite = "none" if not settings.DEBUG else "lax"
+        cookie_secure = not settings.DEBUG
         redirect_res.set_cookie(
             key="access_token",
             value=result["access_token"],
             httponly=True,
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            samesite="lax",
-            secure=not settings.DEBUG,
+            samesite=cookie_samesite,
+            secure=cookie_secure,
             path="/",
         )
         redirect_res.set_cookie(
@@ -280,8 +288,8 @@ async def google_auth_callback_get(
             value=result["refresh_token"],
             httponly=True,
             max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400,
-            samesite="lax",
-            secure=not settings.DEBUG,
+            samesite=cookie_samesite,
+            secure=cookie_secure,
             path="/",
         )
         return redirect_res
