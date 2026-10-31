@@ -1,0 +1,66 @@
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Checkpoint binaries and saved model weights
+checkpoints/*.h5
+checkpoints/*.keras
+checkpoints/best_model.weights.h5
+
+# Single-model legacy outputs
+outputs/model.keras
+outputs/gradcam/*.png
+outputs/plots/*.png
+
+# Multi-Module per-module output artifacts
+chest/outputs/*.keras
+chest/outputs/*.png
+chest/outputs/*.h5
+brain/outputs/*.keras
+brain/outputs/*.png
+brain/outputs/*.h5
+skin/outputs/*.keras
+skin/outputs/*.png
+skin/outputs/*.h5
+eye/outputs/*.keras
+eye/outputs/*.png
+eye/outputs/*.h5
+bone/outputs/*.keras
+bone/outputs/*.png
+bone/outputs/*.h5
+
+!chest/outputs/.gitkeep
+!brain/outputs/.gitkeep
+!skin/outputs/.gitkeep
+!eye/outputs/.gitkeep
+!bone/outputs/.gitkeep
+
+# Raw medical image datasets (Do NOT commit patient images)
+dataset/train/*
+dataset/validation/*
+dataset/test/*
+chest/dataset/*
+brain/dataset/*
+skin/dataset/*
+eye/dataset/*
+bone/dataset/*
+
+!dataset/train/.gitkeep
+!dataset/validation/.gitkeep
+!dataset/test/.gitkeep
+!chest/dataset/.gitkeep
+!brain/dataset/.gitkeep
+!skin/dataset/.gitkeep
+!eye/dataset/.gitkeep
+!bone/dataset/.gitkeep
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1569 @@
+[
+  {
+    "patient_id": "PAT-ONE-P12",
+    "user_id": "USR-PAT-ONE",
+    "first_name": "Patient",
+    "last_name": "One",
+    "_id": "6ae5c1ec00b2ca46e227b356"
+  },
+  {
+    "patient_id": "PAT-TWO-P12",
+    "user_id": "USR-PAT-TWO",
+    "first_name": "Patient",
+    "last_name": "Two",
+    "_id": "6ae5c1ec00b2ca46e227b357"
+  },
+  {
+    "patient_id": "PAT-ONE-001",
+    "user_id": "USR-PAT-ONE-001",
+    "first_name": "Patient",
+    "last_name": "One",
+    "full_name": "Patient One",
+    "email": "patient.one@clinixai.com",
+    "phone": "+91 98765 30001",
+    "gender": "male",
+    "date_of_birth": "1992-01-10",
+    "blood_group": "A+",
+    "address": {
+      "street": "123 Health Ave",
+      "city": "Tech City",
+      "state": "State",
+      "postal_code": "500001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Contact for Patient",
+      "relationship": "Family",
+      "phone": "+91 98765 30001"
+    },
+    "allergies": [
+      "Pollen"
+    ],
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "qr_code": {
+      "raw_token": "pqr_sFUfqu7SDJOX0b7MOOLXmtXCN_eZxM5JESTQDGYTVvc",
+      "token_hash": "22bb596aad5794d62ad6949e2f7d8f0a95938245ad7ced8f3c6e0dfb2c33b3ed",
+      "created_at": "2026-10-06 18:58:20.207000",
+      "is_revoked": false
+    },
+    "primary_physician_id": "DOC-RAO-001",
+    "primary_doctor_id": "DOC-RAO-001",
+    "_id": "6ae5c1ec00b2ca46e227b358"
+  },
+  {
+    "patient_id": "PAT-TWO-002",
+    "user_id": "USR-PAT-TWO-002",
+    "first_name": "Patient",
+    "last_name": "Two",
+    "full_name": "Patient Two",
+    "email": "patient.two@clinixai.com",
+    "phone": "+91 98765 30002",
+    "gender": "female",
+    "date_of_birth": "1995-05-15",
+    "blood_group": "O+",
+    "address": {
+      "street": "123 Health Ave",
+      "city": "Tech City",
+      "state": "State",
+      "postal_code": "500001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Contact for Patient",
+      "relationship": "Family",
+      "phone": "+91 98765 30002"
+    },
+    "allergies": [
+      "Peanuts"
+    ],
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "primary_physician_id": "DOC-VIKRAM-P6",
+    "_id": "6ae5c1ec00b2ca46e227b359"
+  },
+  {
+    "patient_id": "PAT-THREE-003",
+    "user_id": "USR-PAT-THREE-003",
+    "first_name": "Patient",
+    "last_name": "Three",
+    "full_name": "Patient Three",
+    "email": "patient.three@clinixai.com",
+    "phone": "+91 98765 30003",
+    "gender": "male",
+    "date_of_birth": "1988-11-20",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 Health Ave",
+      "city": "Tech City",
+      "state": "State",
+      "postal_code": "500001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Contact for Patient",
+      "relationship": "Family",
+      "phone": "+91 98765 30003"
+    },
+    "allergies": [
+      "Aspirin"
+    ],
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b35a"
+  },
+  {
+    "patient_id": "PAT-2026-4A0634",
+    "user_id": "USR-2026-CC09B5",
+    "full_name": "E2E Booking Patient",
+    "email": "e2e.booking.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-09-25 09:32:53.687000",
+    "updated_at": "2026-09-25 09:32:53.687000",
+    "_id": "6ae5c1ec00b2ca46e227b35b"
+  },
+  {
+    "patient_id": "PAT-ONE-13",
+    "user_id": "USR-PAT-ONE-13",
+    "first_name": "Patient",
+    "last_name": "One",
+    "email": "patient.one.p13@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-24 17:16:51.692000",
+    "updated_at": "2026-10-24 17:16:51.692000",
+    "_id": "6ae5c1ec00b2ca46e227b35c"
+  },
+  {
+    "patient_id": "PAT-ONE-14",
+    "user_id": "USR-PAT-ONE-14",
+    "first_name": "Ramesh",
+    "last_name": "Patel",
+    "email": "patient1.p14@clinixai.com",
+    "gender": "male",
+    "date_of_birth": "1980-05-15",
+    "created_at": "2026-10-24 17:06:14.480000",
+    "updated_at": "2026-10-24 17:06:14.480000",
+    "_id": "6ae5c1ec00b2ca46e227b35d"
+  },
+  {
+    "patient_id": "PAT-TWO-14",
+    "user_id": "USR-PAT-TWO-14",
+    "first_name": "Sunita",
+    "last_name": "Verma",
+    "email": "patient2.p14@clinixai.com",
+    "gender": "female",
+    "date_of_birth": "1985-08-20",
+    "created_at": "2026-10-24 17:06:14.480000",
+    "updated_at": "2026-10-24 17:06:14.480000",
+    "_id": "6ae5c1ec00b2ca46e227b35e"
+  },
+  {
+    "patient_id": "PAT-ONE-15",
+    "user_id": "USR-PAT-ONE-15",
+    "first_name": "Patient",
+    "last_name": "One",
+    "email": "patient.one.p15@clinixai.com",
+    "is_active": true,
+    "created_at": "2026-10-24 17:57:58.907000",
+    "updated_at": "2026-10-24 17:57:58.907000",
+    "_id": "6ae5c1ec00b2ca46e227b35f"
+  },
+  {
+    "patient_id": "PAT-TWO-15",
+    "user_id": "USR-PAT-TWO-15",
+    "first_name": "Patient",
+    "last_name": "Two",
+    "email": "patient.two.p15@clinixai.com",
+    "is_active": true,
+    "created_at": "2026-10-24 17:57:58.907000",
+    "updated_at": "2026-10-24 17:57:58.907000",
+    "_id": "6ae5c1ec00b2ca46e227b360"
+  },
+  {
+    "patient_id": "PAT-2026-0D3527",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.8f6350f7@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 16:24:50.724000",
+    "updated_at": "2026-09-29 16:24:50.724000",
+    "_id": "6ae5c1ec00b2ca46e227b361"
+  },
+  {
+    "patient_id": "PAT-2026-2E29B6",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.12332d91@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 16:30:41.194000",
+    "updated_at": "2026-09-29 16:30:41.194000",
+    "_id": "6ae5c1ec00b2ca46e227b362"
+  },
+  {
+    "patient_id": "PAT-2026-16DDDD",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.c46e1b45@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 16:32:16.782000",
+    "updated_at": "2026-09-29 16:32:16.782000",
+    "_id": "6ae5c1ec00b2ca46e227b363"
+  },
+  {
+    "patient_id": "PAT-2026-77DDB9",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.10ab459e@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 16:34:40.848000",
+    "updated_at": "2026-09-29 16:34:40.848000",
+    "_id": "6ae5c1ec00b2ca46e227b364"
+  },
+  {
+    "patient_id": "PAT-2026-59EF50",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.2ac0dc65@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 16:56:24.674000",
+    "updated_at": "2026-09-29 16:56:24.674000",
+    "_id": "6ae5c1ec00b2ca46e227b365"
+  },
+  {
+    "patient_id": "PAT-2026-384608",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.6e1218b2@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 17:05:12.848000",
+    "updated_at": "2026-09-29 17:05:12.848000",
+    "_id": "6ae5c1ec00b2ca46e227b366"
+  },
+  {
+    "patient_id": "PAT-2026-63828D",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.c9bf5746@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 17:06:56.649000",
+    "updated_at": "2026-09-29 17:06:56.649000",
+    "_id": "6ae5c1ec00b2ca46e227b367"
+  },
+  {
+    "patient_id": "PAT-2026-2A294C",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.c7a07d07@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-29 17:28:07.578000",
+    "updated_at": "2026-09-29 17:28:07.578000",
+    "_id": "6ae5c1ec00b2ca46e227b368"
+  },
+  {
+    "patient_id": "PAT-2026-4C25DA",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.3f5790e9@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-30 08:56:28.821000",
+    "updated_at": "2026-09-30 08:56:28.821000",
+    "_id": "6ae5c1ec00b2ca46e227b369"
+  },
+  {
+    "patient_id": "PAT-2026-46E657",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.c969c14b@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-30 12:17:24.812000",
+    "updated_at": "2026-09-30 12:17:24.812000",
+    "_id": "6ae5c1ec00b2ca46e227b36a"
+  },
+  {
+    "patient_id": "PAT-2026-D0AF7E",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.4c233181@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-09-30 18:11:58.421000",
+    "updated_at": "2026-09-30 18:11:58.421000",
+    "_id": "6ae5c1ec00b2ca46e227b36b"
+  },
+  {
+    "patient_id": "PAT-2026-5A2E13",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.2e10b92d@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 11:35:30.597000",
+    "updated_at": "2026-10-01 11:35:30.597000",
+    "_id": "6ae5c1ec00b2ca46e227b36c"
+  },
+  {
+    "patient_id": "PAT-2026-67448A",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.accace6a@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 16:02:13.864000",
+    "updated_at": "2026-10-01 16:02:13.864000",
+    "_id": "6ae5c1ec00b2ca46e227b36d"
+  },
+  {
+    "patient_id": "PAT-2026-087381",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.bb97005f@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 16:52:38.718000",
+    "updated_at": "2026-10-01 16:52:38.718000",
+    "_id": "6ae5c1ec00b2ca46e227b36e"
+  },
+  {
+    "patient_id": "PAT-2026-8DB8D2",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.a60c199e@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 16:56:03.261000",
+    "updated_at": "2026-10-01 16:56:03.261000",
+    "_id": "6ae5c1ec00b2ca46e227b36f"
+  },
+  {
+    "patient_id": "PAT-DEL-7a7994",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-7a7994@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:10:15.134000",
+    "updated_at": "2026-10-01 18:10:15.134000",
+    "_id": "6ae5c1ec00b2ca46e227b370"
+  },
+  {
+    "patient_id": "PAT-DEL-a07b43",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-a07b43@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:17:45.937000",
+    "updated_at": "2026-10-01 18:17:45.937000",
+    "_id": "6ae5c1ec00b2ca46e227b371"
+  },
+  {
+    "patient_id": "PAT-DEL-be0eaf",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-be0eaf@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:20:45.575000",
+    "updated_at": "2026-10-01 18:20:45.575000",
+    "_id": "6ae5c1ec00b2ca46e227b372"
+  },
+  {
+    "patient_id": "PAT-DEL-cb4251",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-cb4251@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:26:18.442000",
+    "updated_at": "2026-10-01 18:26:18.442000",
+    "_id": "6ae5c1ec00b2ca46e227b373"
+  },
+  {
+    "patient_id": "PAT-DEL-d3e291",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-d3e291@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:27:53.427000",
+    "updated_at": "2026-10-01 18:27:53.427000",
+    "_id": "6ae5c1ec00b2ca46e227b374"
+  },
+  {
+    "patient_id": "PAT-DEL-b97b90",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-b97b90@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-01 18:45:17.538000",
+    "updated_at": "2026-10-01 18:45:17.538000",
+    "_id": "6ae5c1ec00b2ca46e227b375"
+  },
+  {
+    "patient_id": "PAT-2026-96F8E8",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.fea798fa@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 18:46:49.318000",
+    "updated_at": "2026-10-01 18:46:49.318000",
+    "_id": "6ae5c1ec00b2ca46e227b376"
+  },
+  {
+    "patient_id": "PAT-2026-C18EBC",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.efd34cb6@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-01 18:47:59.897000",
+    "updated_at": "2026-10-01 18:47:59.897000",
+    "_id": "6ae5c1ec00b2ca46e227b377"
+  },
+  {
+    "patient_id": "PAT-DEL-818e6a",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-818e6a@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-02 11:46:51.265000",
+    "updated_at": "2026-10-02 11:46:51.265000",
+    "_id": "6ae5c1ec00b2ca46e227b378"
+  },
+  {
+    "patient_id": "PAT-2026-E7FE31",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.c69c377d@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-02 13:20:01.572000",
+    "updated_at": "2026-10-02 13:20:01.572000",
+    "_id": "6ae5c1ec00b2ca46e227b379"
+  },
+  {
+    "patient_id": "PAT-DEL-13d381",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-13d381@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-02 16:09:17.533000",
+    "updated_at": "2026-10-02 16:09:17.533000",
+    "_id": "6ae5c1ec00b2ca46e227b37a"
+  },
+  {
+    "patient_id": "PAT-2026-E55305",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.b9d42b62@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-02 16:14:23.456000",
+    "updated_at": "2026-10-02 16:14:23.456000",
+    "_id": "6ae5c1ec00b2ca46e227b37b"
+  },
+  {
+    "patient_id": "PAT-DEL-79ceab",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-79ceab@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-02 17:50:39.921000",
+    "updated_at": "2026-10-02 17:50:39.921000",
+    "_id": "6ae5c1ec00b2ca46e227b37c"
+  },
+  {
+    "patient_id": "PAT-2026-36DA00",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.e37f5fcf@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-02 18:46:53.079000",
+    "updated_at": "2026-10-02 18:46:53.079000",
+    "_id": "6ae5c1ec00b2ca46e227b37d"
+  },
+  {
+    "patient_id": "PAT-DEL-0254ad",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-0254ad@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-02 20:22:31.901000",
+    "updated_at": "2026-10-02 20:22:31.901000",
+    "_id": "6ae5c1ec00b2ca46e227b37e"
+  },
+  {
+    "patient_id": "PAT-SEC-001",
+    "user_id": "USR-SEC-PAT-01",
+    "first_name": "Alice",
+    "last_name": "Sec",
+    "email": "sec.pat1@clinixai.com",
+    "is_active": true,
+    "is_deleted": false,
+    "_id": "6ae5c1ec00b2ca46e227b37f"
+  },
+  {
+    "patient_id": "PAT-SEC-002",
+    "user_id": "USR-SEC-PAT-02",
+    "first_name": "Bob",
+    "last_name": "Sec",
+    "email": "sec.pat2@clinixai.com",
+    "is_active": true,
+    "is_deleted": false,
+    "_id": "6ae5c1ec00b2ca46e227b380"
+  },
+  {
+    "patient_id": "PAT-2026-2E95C2",
+    "user_id": "USR-2026-98DD11",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-03 13:25:29.509000",
+    "updated_at": "2026-10-03 13:25:29.509000",
+    "_id": "6ae5c1ec00b2ca46e227b381"
+  },
+  {
+    "patient_id": "PAT-2026-0982DC",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.8007b5cc@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-03 14:13:21.142000",
+    "updated_at": "2026-10-03 14:13:21.142000",
+    "_id": "6ae5c1ec00b2ca46e227b382"
+  },
+  {
+    "patient_id": "PAT-DEL-9c2154",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-9c2154@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-03 14:19:35.106000",
+    "updated_at": "2026-10-03 14:19:35.106000",
+    "_id": "6ae5c1ec00b2ca46e227b383"
+  },
+  {
+    "patient_id": "PAT-2026-AAE1B4",
+    "user_id": "USR-2026-03718F",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-03 14:28:22.540000",
+    "updated_at": "2026-10-03 14:28:22.540000",
+    "_id": "6ae5c1ec00b2ca46e227b384"
+  },
+  {
+    "patient_id": "PAT-2026-E9D727",
+    "user_id": "USR-2026-D344AE",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-03 18:35:35.195000",
+    "updated_at": "2026-10-03 18:35:35.195000",
+    "_id": "6ae5c1ec00b2ca46e227b385"
+  },
+  {
+    "patient_id": "PAT-2026-F962D2",
+    "user_id": "USR-2026-44F9B1",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-04 05:53:17.372000",
+    "updated_at": "2026-10-04 05:53:17.372000",
+    "_id": "6ae5c1ec00b2ca46e227b386"
+  },
+  {
+    "patient_id": "PAT-DEL-4e593f",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-4e593f@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-04 05:58:04.779000",
+    "updated_at": "2026-10-04 05:58:04.779000",
+    "_id": "6ae5c1ec00b2ca46e227b387"
+  },
+  {
+    "patient_id": "PAT-DEL-b8829d",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-b8829d@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-04 06:02:39.928000",
+    "updated_at": "2026-10-04 06:02:39.928000",
+    "_id": "6ae5c1ec00b2ca46e227b388"
+  },
+  {
+    "patient_id": "PAT-2026-C987F4",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.e20361ce@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-04 06:06:31.278000",
+    "updated_at": "2026-10-04 06:06:31.278000",
+    "_id": "6ae5c1ec00b2ca46e227b389"
+  },
+  {
+    "patient_id": "PAT-2026-85014E",
+    "user_id": "USR-2026-E66A3C",
+    "full_name": "krish Krish",
+    "email": "krish@gmail.com",
+    "status": "active",
+    "created_at": "2026-10-06 05:17:46.702000",
+    "updated_at": "2026-10-30 13:32:27.598000",
+    "qr_code": {
+      "raw_token": "pqr_8H_F3SCMhxW-GiLTay7f4_DdeOeTLV5eIvuleJMOctY",
+      "token_hash": "ff951bdd72464b06028d626e562a53c2dafff88d2f0016f1be47eb17c7ac5acf",
+      "created_at": "2026-10-30 13:32:27.598000",
+      "is_revoked": false
+    },
+    "_id": "6ae5c1ec00b2ca46e227b38a"
+  },
+  {
+    "patient_id": "PAT-ONE-4B",
+    "user_id": "USR-PAT-ONE-4B",
+    "first_name": "Patient",
+    "last_name": "One",
+    "email": "patient.one.p4b@clinixai.com",
+    "is_active": true,
+    "created_at": "2026-10-24 16:15:02.224000",
+    "updated_at": "2026-10-24 16:15:02.224000",
+    "_id": "6ae5c1ec00b2ca46e227b38b"
+  },
+  {
+    "patient_id": "PAT-TWO-4B",
+    "user_id": "USR-PAT-TWO-4B",
+    "first_name": "Patient",
+    "last_name": "Two",
+    "email": "patient.two.p4b@clinixai.com",
+    "is_active": true,
+    "created_at": "2026-10-24 16:15:02.224000",
+    "updated_at": "2026-10-24 16:15:02.224000",
+    "_id": "6ae5c1ec00b2ca46e227b38c"
+  },
+  {
+    "patient_id": "PAT-2026-F8FFC8",
+    "user_id": "USR-2026-EB96BD",
+    "full_name": "E2E Production Patient",
+    "email": "production.e2e.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 10:24:05.982000",
+    "updated_at": "2026-10-23 10:24:05.982000",
+    "_id": "6ae5c1ec00b2ca46e227b38d"
+  },
+  {
+    "patient_id": "PAT-2026-FCC7EE",
+    "user_id": "USR-2026-D2016D",
+    "full_name": "Other Patient",
+    "email": "other.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 10:24:08.898000",
+    "updated_at": "2026-10-23 10:24:08.898000",
+    "_id": "6ae5c1ec00b2ca46e227b38e"
+  },
+  {
+    "patient_id": "PAT-DEL-61aa75",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-61aa75@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-23 11:16:46.020000",
+    "updated_at": "2026-10-23 11:16:46.020000",
+    "_id": "6ae5c1ec00b2ca46e227b38f"
+  },
+  {
+    "patient_id": "PAT-A-CHEST",
+    "user_id": "USR-PAT-A-CHEST",
+    "first_name": "Patient",
+    "last_name": "Alpha",
+    "email": "patient.a.chest@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-25 11:16:35.611000",
+    "updated_at": "2026-10-25 11:16:35.611000",
+    "_id": "6ae5c1ec00b2ca46e227b390"
+  },
+  {
+    "patient_id": "PAT-B-CHEST",
+    "user_id": "USR-PAT-B-CHEST",
+    "first_name": "Patient",
+    "last_name": "Beta",
+    "email": "patient.b.chest@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-25 11:16:35.611000",
+    "updated_at": "2026-10-25 11:16:35.611000",
+    "_id": "6ae5c1ec00b2ca46e227b391"
+  },
+  {
+    "patient_id": "PAT-2026-8C2092",
+    "user_id": "USR-2026-86B8F3",
+    "full_name": "E2E Production Patient",
+    "email": "production.e2e.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 12:58:40.638000",
+    "updated_at": "2026-10-23 12:58:40.638000",
+    "_id": "6ae5c1ec00b2ca46e227b392"
+  },
+  {
+    "patient_id": "PAT-2026-C86A2B",
+    "user_id": "USR-2026-26126E",
+    "full_name": "Other Patient",
+    "email": "other.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 12:58:42.999000",
+    "updated_at": "2026-10-23 12:58:42.999000",
+    "_id": "6ae5c1ec00b2ca46e227b393"
+  },
+  {
+    "patient_id": "PAT-DEL-30a5c9",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-30a5c9@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-23 13:05:08.042000",
+    "updated_at": "2026-10-23 13:05:08.042000",
+    "_id": "6ae5c1ec00b2ca46e227b394"
+  },
+  {
+    "patient_id": "PAT-2026-CAC53B",
+    "user_id": "USR-2026-28EAB0",
+    "full_name": "Full Patient E2E Test",
+    "email": "full.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 13:07:32.871000",
+    "updated_at": "2026-10-23 13:07:32.871000",
+    "_id": "6ae5c1ec00b2ca46e227b395"
+  },
+  {
+    "patient_id": "PAT-2026-D9839C",
+    "user_id": "USR-2026-48C10D",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 13:11:24.345000",
+    "updated_at": "2026-10-23 13:11:24.345000",
+    "_id": "6ae5c1ec00b2ca46e227b396"
+  },
+  {
+    "patient_id": "PAT-2026-1BA7AA",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.f78fa978@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-23 13:11:35.198000",
+    "updated_at": "2026-10-23 13:11:35.198000",
+    "_id": "6ae5c1ec00b2ca46e227b397"
+  },
+  {
+    "patient_id": "PAT-2026-870228",
+    "user_id": "USR-2026-DDF380",
+    "full_name": "E2E Production Patient",
+    "email": "production.e2e.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 13:51:31.638000",
+    "updated_at": "2026-10-23 13:51:31.638000",
+    "_id": "6ae5c1ec00b2ca46e227b398"
+  },
+  {
+    "patient_id": "PAT-2026-0A6408",
+    "user_id": "USR-2026-34220C",
+    "full_name": "Other Patient",
+    "email": "other.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 13:51:33.538000",
+    "updated_at": "2026-10-23 13:51:33.538000",
+    "_id": "6ae5c1ec00b2ca46e227b399"
+  },
+  {
+    "patient_id": "PAT-DEL-9a9a33",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-9a9a33@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-23 14:03:34.131000",
+    "updated_at": "2026-10-23 14:03:34.131000",
+    "_id": "6ae5c1ec00b2ca46e227b39a"
+  },
+  {
+    "patient_id": "PAT-2026-3D0C3E",
+    "user_id": "USR-2026-503AA4",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 14:21:19.410000",
+    "updated_at": "2026-10-23 14:21:19.410000",
+    "_id": "6ae5c1ec00b2ca46e227b39b"
+  },
+  {
+    "patient_id": "PAT-2026-EF2CDD",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.39d7ba26@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-23 14:21:45.569000",
+    "updated_at": "2026-10-23 14:21:45.569000",
+    "_id": "6ae5c1ec00b2ca46e227b39c"
+  },
+  {
+    "patient_id": "PAT-2026-74CE69",
+    "user_id": "USR-2026-46270E",
+    "full_name": "E2E Production Patient",
+    "email": "production.e2e.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 16:19:31.057000",
+    "updated_at": "2026-10-23 16:19:31.057000",
+    "_id": "6ae5c1ec00b2ca46e227b39d"
+  },
+  {
+    "patient_id": "PAT-2026-11F546",
+    "user_id": "USR-2026-0C49AF",
+    "full_name": "Other Patient",
+    "email": "other.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 16:19:33.774000",
+    "updated_at": "2026-10-23 16:19:33.774000",
+    "_id": "6ae5c1ec00b2ca46e227b39e"
+  },
+  {
+    "patient_id": "PAT-DEL-76fc70",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-76fc70@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-23 16:30:39.455000",
+    "updated_at": "2026-10-23 16:30:39.455000",
+    "_id": "6ae5c1ec00b2ca46e227b39f"
+  },
+  {
+    "patient_id": "PAT-2026-BB3ACE",
+    "user_id": "USR-2026-0072C9",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-23 16:47:13.128000",
+    "updated_at": "2026-10-23 16:47:13.128000",
+    "_id": "6ae5c1ec00b2ca46e227b3a0"
+  },
+  {
+    "patient_id": "PAT-2026-5D23C4",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.f661dea6@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-23 16:47:28.819000",
+    "updated_at": "2026-10-23 16:47:28.819000",
+    "_id": "6ae5c1ec00b2ca46e227b3a1"
+  },
+  {
+    "patient_id": "PAT-2026-3E01DD",
+    "user_id": "USR-2026-F159AF",
+    "full_name": "E2E Production Patient",
+    "email": "production.e2e.patient@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-24 16:47:52.130000",
+    "updated_at": "2026-10-24 16:47:52.130000",
+    "_id": "6ae5c1ec00b2ca46e227b3a2"
+  },
+  {
+    "patient_id": "PAT-2026-C63456",
+    "user_id": "USR-2026-367943",
+    "full_name": "Other Patient",
+    "email": "other.patient.e2e@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-24 16:47:56.619000",
+    "updated_at": "2026-10-24 16:47:56.619000",
+    "_id": "6ae5c1ec00b2ca46e227b3a3"
+  },
+  {
+    "patient_id": "PAT-DEL-b190f8",
+    "first_name": "Ghost",
+    "last_name": "Patient",
+    "full_name": "Ghost Patient",
+    "email": "ghost_PAT-DEL-b190f8@test.com",
+    "is_deleted": true,
+    "status": "inactive",
+    "created_at": "2026-10-24 17:15:02.702000",
+    "updated_at": "2026-10-24 17:15:02.702000",
+    "_id": "6ae5c1ec00b2ca46e227b3a4"
+  },
+  {
+    "patient_id": "PAT-ISOLATED-P5",
+    "user_id": "USR-PAT-ISOLATED-P5",
+    "first_name": "Patient",
+    "last_name": "Isolated",
+    "email": "patient.isolated.p5@clinixai.com",
+    "primary_physician_id": "DOC-VIKRAM-P5",
+    "created_at": "2026-10-25 11:16:09.043000",
+    "updated_at": "2026-10-25 11:16:09.043000",
+    "_id": "6ae5c1ec00b2ca46e227b3a5"
+  },
+  {
+    "patient_id": "PAT-2026-6FFA37",
+    "user_id": "USR-2026-86403F",
+    "full_name": "Hacker Admin",
+    "email": "hacker.admin@clinixai.com",
+    "status": "active",
+    "created_at": "2026-10-24 17:58:13.185000",
+    "updated_at": "2026-10-24 17:58:13.185000",
+    "_id": "6ae5c1ec00b2ca46e227b3a6"
+  },
+  {
+    "patient_id": "PAT-2026-E85102",
+    "user_id": null,
+    "first_name": "Rohan",
+    "last_name": "Verma",
+    "email": "walkin.33fcfd9a@example.com",
+    "phone": "+91 98765 99999",
+    "date_of_birth": "1994-06-15",
+    "gender": "male",
+    "blood_group": "B+",
+    "address": {
+      "street": "123 MG Road",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "postal_code": "560001",
+      "country": "India"
+    },
+    "emergency_contact": {
+      "name": "Sunita Verma",
+      "relationship": "Mother",
+      "phone": "+91 98765 88888"
+    },
+    "allergies": [
+      "Penicillin"
+    ],
+    "status": "active",
+    "registered_by": "USR-STF-ONE-001",
+    "is_deleted": false,
+    "deleted_at": null,
+    "deleted_by": null,
+    "created_at": "2026-10-24 17:58:40.075000",
+    "updated_at": "2026-10-24 17:58:40.075000",
+    "_id": "6ae5c1ec00b2ca46e227b3a7"
+  }
+]

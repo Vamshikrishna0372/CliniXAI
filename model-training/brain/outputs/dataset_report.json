@@ -1,0 +1,41 @@
+{
+  "module": "brain",
+  "layout": "pre_split",
+  "status": "PASS",
+  "errors": [],
+  "warnings": [
+    "Optional validation split not found inside C:\\Users\\Vamshikrishna\\Desktop\\CliniXAI\\model-training\\brain\\dataset. Training will proceed without a validation split."
+  ],
+  "classes": [
+    "glioma",
+    "meningioma",
+    "notumor",
+    "pituitary"
+  ],
+  "num_classes": 4,
+  "total_images": 7200,
+  "splits": {
+    "Training": {
+      "canonical_split": "train",
+      "class_counts": {
+        "glioma": 1400,
+        "meningioma": 1400,
+        "notumor": 1400,
+        "pituitary": 1400
+      },
+      "total_images": 5600,
+      "corrupted_count": 0
+    },
+    "Testing": {
+      "canonical_split": "test",
+      "class_counts": {
+        "glioma": 400,
+        "meningioma": 400,
+        "notumor": 400,
+        "pituitary": 400
+      },
+      "total_images": 1600,
+      "corrupted_count": 0
+    }
+  }
+}

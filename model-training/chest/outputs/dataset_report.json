@@ -1,0 +1,42 @@
+{
+  "module": "chest",
+  "layout": "pre_split",
+  "status": "PASS",
+  "errors": [],
+  "warnings": [],
+  "classes": [
+    "NORMAL",
+    "PNEUMONIA"
+  ],
+  "num_classes": 2,
+  "total_images": 5856,
+  "splits": {
+    "train": {
+      "canonical_split": "train",
+      "class_counts": {
+        "NORMAL": 1341,
+        "PNEUMONIA": 3875
+      },
+      "total_images": 5216,
+      "corrupted_count": 0
+    },
+    "val": {
+      "canonical_split": "val",
+      "class_counts": {
+        "NORMAL": 8,
+        "PNEUMONIA": 8
+      },
+      "total_images": 16,
+      "corrupted_count": 0
+    },
+    "test": {
+      "canonical_split": "test",
+      "class_counts": {
+        "NORMAL": 234,
+        "PNEUMONIA": 390
+      },
+      "total_images": 624,
+      "corrupted_count": 0
+    }
+  }
+}

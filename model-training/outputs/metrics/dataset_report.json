@@ -1,0 +1,28 @@
+{
+  "status": "FAIL",
+  "errors": [
+    "train split contains no valid images",
+    "validation split contains no valid images",
+    "test split contains no valid images"
+  ],
+  "warnings": [],
+  "classes": [],
+  "num_classes": 0,
+  "splits": {
+    "train": {
+      "class_counts": {},
+      "total_images": 0,
+      "corrupted_count": 0
+    },
+    "validation": {
+      "class_counts": {},
+      "total_images": 0,
+      "corrupted_count": 0
+    },
+    "test": {
+      "class_counts": {},
+      "total_images": 0,
+      "corrupted_count": 0
+    }
+  }
+}

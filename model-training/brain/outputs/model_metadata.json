@@ -1,0 +1,31 @@
+{
+  "module_id": "BRAIN_MRI",
+  "module_slug": "brain",
+  "model_name": "Brain MRI Tumor Classification",
+  "modality": "Brain MRI (Magnetic Resonance Imaging)",
+  "architecture": "ResNet50",
+  "model_version": "1.0.0",
+  "input_size": [
+    224,
+    224
+  ],
+  "num_channels": 3,
+  "preprocessing_method": "resnet50",
+  "class_names": [
+    "glioma",
+    "meningioma",
+    "notumor",
+    "pituitary"
+  ],
+  "number_of_classes": 4,
+  "classification_type": "multiclass",
+  "export_timestamp": "2026-08-12T13:34:17.040909+00:00",
+  "gradcam_target_layer": "conv5_block3_out",
+  "decision_threshold": 0.5,
+  "test_metrics": {
+    "accuracy": 0.9306250214576721,
+    "loss": 0.43391045928001404,
+    "top_3_acc": 0.9862499833106995
+  },
+  "clinical_safety_notice": "CliniXAI AI analysis is intended for clinical decision support only. AI-generated results must be interpreted by a qualified healthcare professional and must not be used as an independent diagnosis."
+}

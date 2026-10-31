@@ -1,0 +1,61 @@
+{
+  "original_image": {
+    "exists": true,
+    "path": "C:\\Users\\Vamshikrishna\\Desktop\\CliniXAI\\backend\\uploads\\medical-records\\image_AI-2026-466F63.jpg",
+    "size_bytes": 1445110,
+    "sha256": "0511e9e84995cb7c15fe83eac8d10753e9a28f7e2d1c44320304d02d2831d4b1",
+    "dimensions": [
+      1448,
+      1086
+    ],
+    "mode": "RGB",
+    "format": "PNG"
+  },
+  "gradcam_artifact": {
+    "exists": true,
+    "path": "C:\\Users\\Vamshikrishna\\Desktop\\CliniXAI\\backend\\uploads\\ai-analyses\\gradcam_AI-2026-466F63.png",
+    "size_bytes": 54692,
+    "sha256": "0351b1ae00190a925e08097235c66c9b278cf937ad3e940a96dc1f9bf03b7087",
+    "dimensions": [
+      224,
+      224
+    ],
+    "mode": "RGB",
+    "format": "PNG"
+  },
+  "mongodb_record": {
+    "analysis_id": "AI-2026-466F63",
+    "patient_id": "PAT-ONE-001",
+    "doctor_id": "DOC-RAO-001",
+    "document_id": null,
+    "medical_record_id": "image_AI-2026-466F63.jpg",
+    "input_checksum": "0511e9e84995cb7c15fe83eac8d10753e9a28f7e2d1c44320304d02d2831d4b1",
+    "prediction": {
+      "predicted_class": "notumor",
+      "confidence": 1.0,
+      "class_probabilities": {
+        "glioma": 0.0,
+        "meningioma": 0.0,
+        "notumor": 1.0,
+        "pituitary": 0.0
+      },
+      "decision_threshold": 0.5,
+      "low_confidence": false
+    },
+    "explainability": {
+      "method": "grad_cam",
+      "target_layer": "conv5_block3_out",
+      "target_class": "notumor",
+      "artifact_storage_key": "gradcam_AI-2026-466F63.png"
+    },
+    "doctor_review": {
+      "decision": "accepted",
+      "clinical_interpretation": "asludgfuasdgukahfg",
+      "notes": null,
+      "reviewed_by": "USR-DOC-RAO-001",
+      "reviewed_at": "2026-10-30 17:32:18.924000"
+    }
+  },
+  "inference_error": "'PredictionResult' object has no attribute 'probabilities'",
+  "inference_traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\Vamshikrishna\\Desktop\\CliniXAI\\backend\\scratch\\audit_image_and_prediction.py\", line 94, in <module>\n    \"probabilities\": pred.probabilities,\n                     ^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Vamshikrishna\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\pydantic\\main.py\", line 1026, in __getattr__\n    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')\nAttributeError: 'PredictionResult' object has no attribute 'probabilities'\n"
+}

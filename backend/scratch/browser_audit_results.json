@@ -1,0 +1,118 @@
+{
+  "analysis_id": "AI-2026-466F63",
+  "url": "http://localhost:3100/app/ai-analysis/AI-2026-466F63",
+  "title": "AI Analysis \u2014 CliniXAI",
+  "rendered_images": [
+    {
+      "index": 0,
+      "alt": "Grad-CAM heatmap",
+      "src_preview": "blob:http://localhost:3100/e2f6eb90-da3e-4213-a2ae-859024daf2bb",
+      "is_blob": true,
+      "is_empty": false,
+      "visible": true,
+      "box": {
+        "x": 774,
+        "y": 382,
+        "width": 449,
+        "height": 449
+      }
+    }
+  ],
+  "network_requests": [
+    {
+      "url": "http://localhost:3100/src/routes/app.documents.tsx?t=1793383308745",
+      "method": "GET",
+      "status": 200,
+      "content_type": "text/javascript",
+      "content_length": "39898"
+    },
+    {
+      "url": "http://localhost:3100/src/routes/app.medical-records.tsx?t=1793383308745",
+      "method": "GET",
+      "status": 200,
+      "content_type": "text/javascript",
+      "content_length": "56664"
+    },
+    {
+      "url": "http://localhost:3100/src/components/domain/medical-image-viewer.tsx",
+      "method": "GET",
+      "status": 200,
+      "content_type": "text/javascript",
+      "content_length": "35546"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/ai-analyses/AI-2026-466F63",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "content_length": "1920"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/documents?limit=100",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "content_length": "22106"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/ai-analyses/AI-2026-466F63",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "content_length": "1920"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/ai-analyses?page_size=100",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "content_length": "150133"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/ai-analyses/AI-2026-466F63/gradcam",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/png",
+      "content_length": "54692"
+    },
+    {
+      "url": "http://localhost:8000/api/v1/medical-records/image_AI-2026-466F63.jpg/file",
+      "method": "GET",
+      "status": 404,
+      "content_type": "application/json",
+      "content_length": "136"
+    }
+  ],
+  "console_logs": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "[ClinixStore] WS useEffect triggered. user: false auth: false hydrated: false"
+    },
+    {
+      "type": "log",
+      "text": "[ClinixStore] WS useEffect triggered. user: true auth: true hydrated: true"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "viewer_html_snippet": null,
+  "body_snippet": "Toggle SidebarDashboardAI AnalysisSearch patients, reports...\u2318K9+DADr. Arjun RaoDoctorAI analysis \u2014 Brain MRIReviewed (Unreleased)AI-2026-466F63 \u00b7 30 Oct 2026 \u00b7 Patient One (PAT-ONE-001) All analyses AI predictionModel: Brain MRI Tumor Classification \u00b7 ResNet50Brain MRI Tumor Classificationv1.0.0ResNet50Grad-CAM available Side-by-side Overlay Original onlyOriginal imageGrad-CAM heatmapHeatmap opacity70%Highlighted regions indicate areas that contributed more strongly to the model's prediction. They do not prove disease.Predicted classnotumorReal AI analysis completed.Confidence distributionHigh confidencenotumor100%glioma0%meningioma0%pituitary0%High confidence does not equal medical certainty.Disclaimer. CliniXAI AI results are clinical decision-support information and are not a final diagnosis. The treating doctor must interpret AI findings together with symptoms, medical history, examination findings, and other clinical information.Doctor review & clinical assessmentReview AI findings and provide clinical assessment. Releasing allows the patient to view the finalized report.Lifecycle Status: ReviewedPatient Visibility: Not Visible to PatientDecision Accepted Rejected Not clinically relevantClinical assessmentasludgfuasdgukahfgCurrent review: asludgfuasdgukahfgReviewed on Invalid DateUpdate ReviewRelease to PatientQuick Review & Release"
+}

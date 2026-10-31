@@ -1,0 +1,31 @@
+[
+  {
+    "setting_id": "default",
+    "hospital_name": "CliniXAI Apex Care 5d68",
+    "tagline": "AI-Powered Clinical Excellence & Hospital Care",
+    "contact_email": "admin@clinixai.com",
+    "contact_phone": "+91 80 4000 1000",
+    "emergency_number": "+91 80 2345 0000",
+    "address": "124 Innovation Park, Health City, Bengaluru, Karnataka 560100",
+    "opening_time": "08:00",
+    "closing_time": "20:00",
+    "appointment_slot_duration_minutes": 30,
+    "timezone": "Asia/Kolkata",
+    "currency": "INR",
+    "total_bed_capacity": 320,
+    "emergency_contact": "+91-11-23456789",
+    "ai_auto_suggest": true,
+    "ai_confidence_threshold": 70,
+    "updated_at": "2026-10-24 17:23:53.500000",
+    "updated_by": "USR-ADM-DEMO-001",
+    "_id": "6ae5ccd96cbf06e52fa40014"
+  },
+  {
+    "setting_id": "HSP-SETTINGS-001",
+    "hospital_name": "CliniXAI Apex Medical Center (P20 Audited)",
+    "ai_auto_suggest": true,
+    "ai_confidence_threshold": 75.0,
+    "updated_at": "2026-10-02 14:47:42.021000",
+    "_id": "6ae5ccd96cbf06e52fa40015"
+  }
+]

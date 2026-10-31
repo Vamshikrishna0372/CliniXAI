@@ -1,0 +1,74 @@
+[
+  {
+    "department_id": "DEPT-CARD",
+    "name": "Cardiology",
+    "code": "CARD",
+    "description": "Cardiovascular healthcare and diagnostics.",
+    "icon": "Heart",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3c8"
+  },
+  {
+    "department_id": "DEPT-NEUR",
+    "name": "Neurology",
+    "code": "NEUR",
+    "description": "Brain and nervous system clinical care.",
+    "icon": "Brain",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3c9"
+  },
+  {
+    "department_id": "DEPT-DERM",
+    "name": "Dermatology",
+    "code": "DERM",
+    "description": "Skin and nail diagnosis and therapy.",
+    "icon": "Sun",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3ca"
+  },
+  {
+    "department_id": "DEPT-ORTH",
+    "name": "Orthopedics",
+    "code": "ORTH",
+    "description": "Musculoskeletal system and joint care.",
+    "icon": "Bone",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3cb"
+  },
+  {
+    "department_id": "DEPT-PED",
+    "name": "Pediatrics",
+    "code": "PED",
+    "description": "Infant, child, and adolescent healthcare.",
+    "icon": "Baby",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3cc"
+  },
+  {
+    "department_id": "DEPT-GEN",
+    "name": "General Medicine",
+    "code": "GEN",
+    "description": "Primary healthcare and routine consultations.",
+    "icon": "Stethoscope",
+    "status": "active",
+    "is_deleted": false,
+    "created_at": "2026-10-31 10:24:46.061000",
+    "updated_at": "2026-10-31 10:24:46.061000",
+    "_id": "6ae5c1ec00b2ca46e227b3cd"
+  }
+]
