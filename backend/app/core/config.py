@@ -118,11 +118,10 @@ class Settings(BaseSettings):
     @field_validator("GOOGLE_CLIENT_SECRET", mode="before")
     @classmethod
     def parse_google_client_secret(cls, v: Optional[str]) -> Optional[str]:
+        """Validates Google Client Secret strictly from environment with zero hardcoded fallback."""
         if v and str(v).strip():
             return str(v).strip()
-        p1 = "GOCSPX"
-        p2 = "jo_LH4mxNX2aB0pHlM1MkRnvilO_"
-        return f"{p1}-{p2}"
+        return None
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

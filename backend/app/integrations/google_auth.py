@@ -57,9 +57,11 @@ class GoogleAuthService:
                 ts_str = state.replace("clinixai_oauth_", "").split("_")[0]
                 ts_ms = int(ts_str)
                 ts_sec = ts_ms / 1000.0 if ts_ms > 1e11 else float(ts_ms)
-                if abs(time.time() - ts_sec) < 900:
+                diff = time.time() - ts_sec
+                # Disallow future timestamps (with 5s clock skew tolerance) and enforce 15m expiration
+                if -5 <= diff < 900:
                     return True
-                logger.warning(f"OAuth timestamp expired: {state}")
+                logger.warning(f"OAuth timestamp expired or out of bounds: diff={diff:.1f}s")
                 return False
             except Exception as e:
                 logger.warning(f"Failed parsing frontend OAuth state: {e}")
