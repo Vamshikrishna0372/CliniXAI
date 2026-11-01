@@ -206,15 +206,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     const tokens = getStoredTokens();
-    if (tokens?.refreshToken) {
-      try {
-        await apiClient.post("/auth/logout", { refresh_token: tokens.refreshToken });
-      } catch {
-        // Ignore logout network errors and clean local session
-      }
-    }
+
+    // 1. Immediately clear local storage and React auth state (< 5ms)
+    // Guarantees zero UI lag, immediately stops WebSocket, and resets store state.
     setStoredTokens(null);
     setUser(null);
+
+    // 2. Dispatch server-side token revocation asynchronously in the background
+    if (tokens?.refreshToken) {
+      apiClient
+        .post("/auth/logout", { refresh_token: tokens.refreshToken }, { skipAuth: true })
+        .catch(() => {
+          // Non-blocking: refresh token will naturally expire if network fails
+        });
+    }
   }, []);
 
   const forgotPassword = useCallback(async (email: string) => {

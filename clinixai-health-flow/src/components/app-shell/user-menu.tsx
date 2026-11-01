@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { LogOut, User, Settings, LifeBuoy, Sun, Moon, Monitor, ChevronDown } from "lucide-react";
+import { LogOut, User, Settings, LifeBuoy, Sun, Moon, Monitor, ChevronDown, Loader2 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger,
@@ -20,10 +20,26 @@ export function UserMenu() {
   const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [confirm, setConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const navigate = useNavigate();
 
   if (!user) return null;
   const initials = (user.firstName[0] || "?") + (user.lastName[0] || "");
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+      setConfirm(false);
+      navigate({ to: "/auth/login" });
+    } catch {
+      setConfirm(false);
+      navigate({ to: "/auth/login" });
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <>
@@ -75,15 +91,31 @@ export function UserMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={confirm} onOpenChange={setConfirm}>
+      <AlertDialog open={confirm} onOpenChange={(open) => { if (!isLoggingOut) setConfirm(open); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Log out of CliniXAI?</AlertDialogTitle>
             <AlertDialogDescription>You'll need to sign in again to access your workspace.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={async () => { await signOut(); navigate({ to: "/auth/login" }); }}>Log out</AlertDialogAction>
+            <AlertDialogCancel disabled={isLoggingOut}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogout();
+              }}
+              disabled={isLoggingOut}
+              className="gap-2"
+            >
+              {isLoggingOut ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin shrink-0" />
+                  <span>Signing out...</span>
+                </>
+              ) : (
+                "Log out"
+              )}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
