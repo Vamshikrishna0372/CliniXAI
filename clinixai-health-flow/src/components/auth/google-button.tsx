@@ -93,6 +93,9 @@ export function GoogleButton({
 
         if (googleBtnContainerRef.current) {
           googleBtnContainerRef.current.innerHTML = "";
+          const containerWidth = googleBtnContainerRef.current.offsetWidth || 380;
+          const validWidth = Math.min(400, Math.max(200, Math.floor(containerWidth)));
+
           window.google.accounts.id.renderButton(googleBtnContainerRef.current, {
             type: "standard",
             theme: "outline",
@@ -100,7 +103,7 @@ export function GoogleButton({
             text: "continue_with",
             shape: "rectangular",
             logo_alignment: "left",
-            width: "100%",
+            width: String(validWidth),
           });
         }
         setGisReady(true);

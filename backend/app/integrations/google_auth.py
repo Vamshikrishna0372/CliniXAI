@@ -99,7 +99,17 @@ class GoogleAuthService:
             claim = id_token.verify_oauth2_token(
                 id_token_str, request, settings.GOOGLE_CLIENT_ID
             )
-            
+
+            # Strict issuer validation
+            issuer = claim.get("iss", "")
+            if issuer not in ["accounts.google.com", "https://accounts.google.com"]:
+                raise UnauthorizedError("Google ID token issuer is untrusted.")
+
+            # Strict audience validation
+            audience = claim.get("aud", "")
+            if audience != settings.GOOGLE_CLIENT_ID:
+                raise UnauthorizedError("Google ID token audience mismatch.")
+
             if not claim.get("email_verified", True):
                 raise UnauthorizedError("Google account email is not verified.")
 
@@ -110,10 +120,58 @@ class GoogleAuthService:
                 "picture": claim.get("picture"),
             }
         except ImportError:
-            logger.warning("google-auth package not installed; falling back.")
-            raise UnauthorizedError("Google ID token verification failed: library unavailable.")
+            logger.warning("google-auth package not installed or import failed; querying Google OIDC tokeninfo endpoint.")
+            try:
+                import time
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    resp = await client.get(
+                        "https://oauth2.googleapis.com/tokeninfo",
+                        params={"id_token": id_token_str},
+                    )
+                if resp.status_code == 200:
+                    claim = resp.json()
+                    if claim.get("aud") != settings.GOOGLE_CLIENT_ID:
+                        raise UnauthorizedError("Google ID token audience mismatch.")
+                    if claim.get("iss") not in ["accounts.google.com", "https://accounts.google.com"]:
+                        raise UnauthorizedError("Google ID token issuer is untrusted.")
+                    if not (claim.get("email_verified") in [True, "true", "True"]):
+                        raise UnauthorizedError("Google account email is not verified.")
+                    if int(claim.get("exp", 0)) < int(time.time()):
+                        raise UnauthorizedError("Google ID token has expired. Please sign in again.")
+                    return {
+                        "google_sub": claim["sub"],
+                        "email": claim["email"].lower(),
+                        "full_name": claim.get("name", claim["email"].split("@")[0]),
+                        "picture": claim.get("picture"),
+                    }
+                elif resp.status_code == 400:
+                    err_desc = resp.json().get("error_description", "Invalid token")
+                    logger.warning(f"Google tokeninfo rejected token: {err_desc}")
+                    raise UnauthorizedError(f"Google ID token verification failed: {err_desc}")
+                else:
+                    raise UnauthorizedError("Google verification service error.")
+            except UnauthorizedError:
+                raise
+            except Exception as fallback_err:
+                logger.error(f"Google OIDC fallback verification failed: {fallback_err}")
+                raise UnauthorizedError("Google ID token verification failed: library unavailable.")
+        except ValueError as val_err:
+            err_msg = str(val_err)
+            logger.warning(f"Google ID token verification failed (ValueError): {err_msg}")
+            if "expired" in err_msg.lower():
+                raise UnauthorizedError("Google ID token has expired. Please sign in again.")
+            elif "audience" in err_msg.lower() or "recipient" in err_msg.lower():
+                raise UnauthorizedError("Google ID token audience mismatch.")
+            elif "issuer" in err_msg.lower():
+                raise UnauthorizedError("Google ID token issuer is untrusted.")
+            elif "signature" in err_msg.lower():
+                raise UnauthorizedError("Google ID token has an invalid signature.")
+            else:
+                raise UnauthorizedError(f"Invalid Google ID token: {err_msg}")
+        except UnauthorizedError:
+            raise
         except Exception as exc:
-            logger.error(f"Google ID token verification failed: {exc}")
+            logger.error(f"Google ID token verification unexpected error: {exc}")
             raise UnauthorizedError(f"Google authentication failed: {str(exc)}")
 
     @classmethod
