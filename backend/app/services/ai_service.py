@@ -205,32 +205,45 @@ class AIService:
         # 4. Resolve Target Medical AI Module
         registry = get_ai_registry()
         req_type = request.analysis_type
+
+        # Extract normalized strings for metadata matching
+        doc_cat = str(doc_rec.get("category", "")).lower() if doc_rec else ""
+        doc_mod = str(doc_rec.get("modality", "")).lower() if doc_rec else ""
+        doc_tit = str(doc_rec.get("title", "")).lower() if doc_rec else ""
+        doc_fn = str(doc_rec.get("original_file_name", "") or doc_rec.get("file_name", "")).lower() if doc_rec else ""
+
+        rec_cat = str(record.get("category", "")).lower()
+        rec_mod = str(record.get("modality", "")).lower()
+        rec_tit = str(record.get("title", "")).lower()
+        rec_fn = str(record.get("original_file_name", "") or record.get("file_name", "")).lower()
+        fc = file_category.lower()
+        rt = record_type.lower()
+
         is_mri_modality = (
-            file_category in ["mri", "brain_mri", "brain-mri"]
-            or record_type in ["mri", "brain_mri", "brain-mri"]
+            fc in ["mri", "brain_mri", "brain-mri"]
+            or rt in ["mri", "brain_mri", "brain-mri"]
+            or any(k in rec_cat for k in ["mri", "brain"])
+            or any(k in rec_mod for k in ["mri", "brain"])
+            or any(k in rec_tit for k in ["brain", "mri"])
+            or any(k in rec_fn for k in ["brain", "mri"])
             or record.get("is_mri", False)
-            or any(k in str(record.get("title", "")).lower() for k in ["brain", "mri"])
-            or any(k in str(record.get("original_file_name", "")).lower() for k in ["brain", "mri"])
-            or any(k in str(record.get("file_name", "")).lower() for k in ["brain", "mri"])
             or (doc_rec and (
-                str(doc_rec.get("category") or "").upper() in ["MRI", "BRAIN_MRI", "BRAIN-MRI"]
+                any(k in doc_cat for k in ["mri", "brain"])
+                or any(k in doc_mod for k in ["mri", "brain"])
+                or any(k in doc_tit for k in ["brain", "mri"])
+                or any(k in doc_fn for k in ["brain", "mri"])
                 or doc_rec.get("is_mri", False)
-                or any(k in str(doc_rec.get("category", "")).lower() for k in ["mri", "brain"])
-                or any(k in str(doc_rec.get("title", "")).lower() for k in ["brain", "mri"])
-                or any(k in str(doc_rec.get("original_file_name", "")).lower() for k in ["brain", "mri"])
             ))
         )
 
         if not req_type:
-            fc = file_category.lower()
-            rt = record_type.lower()
-            if is_mri_modality or any(k in fc or k in rt for k in ["mri", "brain"]):
+            if is_mri_modality or any(k in fc or k in rt or k in rec_cat or k in rec_mod or k in doc_cat or k in doc_mod for k in ["mri", "brain"]):
                 req_type = "BRAIN_MRI"
-            elif any(k in fc or k in rt for k in ["skin", "derm"]):
+            elif any(k in fc or k in rt or k in rec_cat or k in rec_mod or k in doc_cat or k in doc_mod for k in ["skin", "derm"]):
                 req_type = "SKIN_DERMOSCOPY"
-            elif any(k in fc or k in rt for k in ["fundus", "retin", "eye"]):
+            elif any(k in fc or k in rt or k in rec_cat or k in rec_mod or k in doc_cat or k in doc_mod for k in ["fundus", "retin", "eye"]):
                 req_type = "RETINAL_FUNDUS"
-            elif any(k in fc or k in rt for k in ["bone", "fract"]):
+            elif any(k in fc or k in rt or k in rec_cat or k in rec_mod or k in doc_cat or k in doc_mod for k in ["bone", "fract"]):
                 req_type = "BONE_XRAY"
             else:
                 req_type = "CHEST_XRAY"
@@ -239,12 +252,18 @@ class AIService:
             is_brain_eligible = (
                 is_mri_modality
                 or any(k in str(source_id).lower() for k in ["mri", "brain"])
-                or any(k in file_category for k in ["mri", "brain"])
-                or any(k in record_type for k in ["mri", "brain"])
-                or any(k in str(record.get("title", "")).lower() for k in ["mri", "brain"])
-                or any(k in str(record.get("original_file_name", "")).lower() for k in ["mri", "brain"])
-                or any(k in str(record.get("file_name", "")).lower() for k in ["mri", "brain"])
-                or (doc_rec and any(k in str(doc_rec.get("original_file_name", "")).lower() for k in ["mri", "brain"]))
+                or any(k in fc for k in ["mri", "brain"])
+                or any(k in rt for k in ["mri", "brain"])
+                or any(k in rec_cat for k in ["mri", "brain"])
+                or any(k in rec_mod for k in ["mri", "brain"])
+                or any(k in rec_tit for k in ["mri", "brain"])
+                or any(k in rec_fn for k in ["mri", "brain"])
+                or (doc_rec and (
+                    any(k in doc_cat for k in ["mri", "brain"])
+                    or any(k in doc_mod for k in ["mri", "brain"])
+                    or any(k in doc_tit for k in ["mri", "brain"])
+                    or any(k in doc_fn for k in ["mri", "brain"])
+                ))
             )
             if not is_brain_eligible:
                 raise AppValidationError(

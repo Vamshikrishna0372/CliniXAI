@@ -94,6 +94,17 @@ class DocumentService:
             modality = "Skin Dermoscopy"
         elif category == DocumentCategory.FUNDUS:
             modality = "Retinal Fundus"
+        elif category == DocumentCategory.OTHER:
+            low_title = (title or "").lower()
+            low_fn = (val_result.filename or "").lower()
+            if any(k in low_title or k in low_fn for k in ["mri", "brain"]):
+                category = DocumentCategory.MRI
+                modality = "Brain MRI"
+            elif any(k in low_title or k in low_fn for k in ["xray", "x-ray", "chest", "cxr"]):
+                category = DocumentCategory.XRAY
+                modality = "Chest X-Ray"
+            else:
+                modality = "Other"
         else:
             modality = category.value if hasattr(category, "value") else str(category)
 
@@ -197,13 +208,14 @@ class DocumentService:
             d["uploader_name"] = u_name
 
         # Modality
-        if not d.get("modality"):
-            cat = str(d.get("category", "")).lower()
-            title = str(d.get("title", "")).lower()
-            fn = str(d.get("original_file_name", "")).lower()
-            if "mri" in cat or "mri" in title or "mri" in fn or "brain" in title:
+        current_mod = str(d.get("modality") or "").strip()
+        cat = str(d.get("category", "")).lower()
+        title = str(d.get("title", "")).lower()
+        fn = str(d.get("original_file_name", "")).lower()
+        if not current_mod or current_mod.lower() == "other":
+            if "mri" in cat or "mri" in title or "mri" in fn or "brain" in title or "brain" in cat:
                 d["modality"] = "Brain MRI"
-            elif "xray" in cat or "x-ray" in cat or "xray" in title or "x-ray" in title:
+            elif "xray" in cat or "x-ray" in cat or "xray" in title or "x-ray" in title or "chest" in cat or "chest" in title:
                 d["modality"] = "Chest X-Ray"
             elif "ct" in cat or "ct" in title:
                 d["modality"] = "CT Scan"
@@ -291,17 +303,57 @@ class DocumentService:
         return items, total
 
     async def update_metadata(self, document_id: str, req: DocumentMetadataUpdateRequest) -> MedicalDocumentInDB:
-        """Updates document title, category, or clinical notes."""
+        """Updates document title, category, modality, or clinical notes."""
         document = await self.get_document(document_id)
         update_data = req.model_dump(exclude_unset=True)
         if not update_data:
             return document
+
+        # Synchronize category and modality
+        if "category" in update_data and update_data["category"]:
+            cat_val = str(update_data["category"].value if hasattr(update_data["category"], "value") else update_data["category"]).lower()
+            if "mri" in cat_val:
+                update_data["category"] = DocumentCategory.MRI.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "Brain MRI"
+            elif "xray" in cat_val or "x-ray" in cat_val:
+                update_data["category"] = DocumentCategory.XRAY.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "Chest X-Ray"
+            elif "ct" in cat_val:
+                update_data["category"] = DocumentCategory.CT.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "CT Scan"
+            elif "derm" in cat_val or "skin" in cat_val:
+                update_data["category"] = DocumentCategory.DERMOSCOPY.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "Skin Dermoscopy"
+            elif "fundus" in cat_val or "retin" in cat_val:
+                update_data["category"] = DocumentCategory.FUNDUS.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "Retinal Fundus"
+            elif "other" in cat_val:
+                update_data["category"] = DocumentCategory.OTHER.value
+                if "modality" not in update_data or not update_data["modality"]:
+                    update_data["modality"] = "Other"
+
+        if "modality" in update_data and update_data["modality"]:
+            mod_val = str(update_data["modality"]).lower()
+            if ("mri" in mod_val or "brain" in mod_val) and "category" not in update_data:
+                update_data["category"] = DocumentCategory.MRI.value
+            elif ("xray" in mod_val or "x-ray" in mod_val or "chest" in mod_val) and "category" not in update_data:
+                update_data["category"] = DocumentCategory.XRAY.value
 
         update_data["updated_at"] = utc_now()
         await self.collection.update_one(
             {"document_id": document_id},
             {"$set": update_data}
         )
+        try:
+            from app.database.mongodb import save_in_memory_snapshot
+            await save_in_memory_snapshot(self.db)
+        except Exception:
+            pass
         return await self.get_document(document_id)
 
     async def soft_delete_document(self, document_id: str, deleted_by: str) -> bool:

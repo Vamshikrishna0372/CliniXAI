@@ -76,7 +76,7 @@ function DocumentsPage() {
       : "";
 
   const [uploadOpen, setUploadOpen] = useState(false);
-  const [uploadCat, setUploadCat] = useState<MedDocument["category"]>("Other");
+  const [uploadCat, setUploadCat] = useState<MedDocument["category"]>("Brain MRI");
   const [uploadPatient, setUploadPatient] = useState(isStaffLike ? (patients[0]?.id ?? "") : currentPatId);
 
   const [filterPatient, setFilterPatient] = useState<string>(isStaffLike ? "all" : currentPatId);
@@ -157,16 +157,26 @@ function DocumentsPage() {
 
     for (const f of Array.from(files)) {
       try {
+        let effectiveCat = uploadCat;
+        const lowerName = f.name.toLowerCase();
+        if (effectiveCat === "Other") {
+          if (lowerName.includes("mri") || lowerName.includes("brain")) {
+            effectiveCat = "Brain MRI";
+          } else if (lowerName.includes("xray") || lowerName.includes("x-ray") || lowerName.includes("chest") || lowerName.includes("cxr")) {
+            effectiveCat = "Chest X-Ray";
+          }
+        }
+
         const fd = new FormData();
         let backendCat: string = "Other";
-        if (uploadCat === "Brain MRI") backendCat = "MRI";
-        else if (uploadCat === "Chest X-Ray") backendCat = "X-Ray";
-        else if (uploadCat === "CT Scan") backendCat = "CT";
-        else if (uploadCat === "Lab Report" || uploadCat === "Diagnostic Report") backendCat = "Lab Report";
-        else if (uploadCat === "Consultation") backendCat = "Medical PDF";
-        else if (uploadCat === "Prescription") backendCat = "Prescription";
-        else if (uploadCat === "Medical Image") backendCat = "X-Ray";
-        else backendCat = String(uploadCat);
+        if (effectiveCat === "Brain MRI") backendCat = "MRI";
+        else if (effectiveCat === "Chest X-Ray") backendCat = "X-Ray";
+        else if (effectiveCat === "CT Scan") backendCat = "CT";
+        else if (effectiveCat === "Lab Report" || effectiveCat === "Diagnostic Report") backendCat = "Lab Report";
+        else if (effectiveCat === "Consultation") backendCat = "Medical PDF";
+        else if (effectiveCat === "Prescription") backendCat = "Prescription";
+        else if (effectiveCat === "Medical Image") backendCat = "MRI";
+        else backendCat = String(effectiveCat);
 
         fd.append("patient_id", pid);
         fd.append("title", f.name);
@@ -178,7 +188,7 @@ function DocumentsPage() {
           id: createdDoc.document_id,
           patientId: createdDoc.patient_id,
           name: createdDoc.title || createdDoc.original_file_name,
-          category: uploadCat,
+          category: effectiveCat,
           fileType: fileTypeFrom(createdDoc.original_file_name),
           uploadedBy: user?.role === "patient" ? "patient" : user?.role === "doctor" ? "doctor" : "staff",
           sizeKb: Math.max(1, Math.round((createdDoc.file_size_bytes || f.size) / 1024)),

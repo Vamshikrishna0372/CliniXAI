@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/dashboard/file-upload";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useClinix } from "@/lib/store/clinix-store";
 import { useAuth } from "@/lib/auth-context";
 import { fmtDate, type MedDocument } from "@/lib/mock/domain";
@@ -101,6 +102,7 @@ function AIAnalysisForm() {
   const [docBlobUrl, setDocBlobUrl] = useState<string | null>(null);
   const [loadingDoc, setLoadingDoc] = useState<boolean>(false);
   const [docError, setDocError] = useState<string | null>(null);
+  const [selectedModule, setSelectedModule] = useState<"BRAIN_MRI" | "CHEST_XRAY">("BRAIN_MRI");
 
   useEffect(() => {
     let cancelled = false;
@@ -125,6 +127,24 @@ function AIAnalysisForm() {
           setExistingDoc(docData);
           if (docData.patient_id) {
             setPatientId(docData.patient_id);
+          }
+
+          const cat = String(docData.category || "").toLowerCase();
+          const title = String(docData.title || "").toLowerCase();
+          const mod = String(docData.modality || "").toLowerCase();
+          if (
+            routeSearch.modality?.toUpperCase() === "CHEST_XRAY" ||
+            cat.includes("chest") ||
+            cat.includes("xray") ||
+            cat.includes("x-ray") ||
+            title.includes("chest") ||
+            title.includes("xray") ||
+            mod.includes("chest") ||
+            mod.includes("xray")
+          ) {
+            setSelectedModule("CHEST_XRAY");
+          } else {
+            setSelectedModule("BRAIN_MRI");
           }
 
           try {
@@ -295,15 +315,35 @@ function AIAnalysisForm() {
 
     try {
       setStage(1);
+      const targetModule = selectedModule || "BRAIN_MRI";
+      const isBrainModule = targetModule === "BRAIN_MRI";
+      const isChestModule = targetModule === "CHEST_XRAY";
+
       const cat = String(existingDoc.category || "").toLowerCase();
+      const mod = String(existingDoc.modality || "").toLowerCase();
       const title = String(existingDoc.title || "").toLowerCase();
-      let moduleType = routeSearch.modality || "BRAIN_MRI";
-      if (!routeSearch.modality) {
-        if (cat.includes("brain") || cat.includes("mri") || title.includes("brain") || title.includes("mri")) moduleType = "BRAIN_MRI";
-        else if (cat.includes("chest") || cat.includes("xray") || cat.includes("x-ray") || title.includes("chest") || title.includes("x-ray")) moduleType = "CHEST_XRAY";
-        else if (cat.includes("skin") || cat.includes("derm")) moduleType = "SKIN_DERMOSCOPY";
-        else if (cat.includes("retin") || cat.includes("fundus")) moduleType = "RETINAL_FUNDUS";
-        else if (cat.includes("bone")) moduleType = "BONE_XRAY";
+
+      // Ensure document metadata in DB is correctly aligned with clinical module choice
+      const needsClassification =
+        cat === "other" ||
+        mod === "other" ||
+        (isBrainModule && !cat.includes("mri") && !mod.includes("mri") && !title.includes("mri") && !title.includes("brain")) ||
+        (isChestModule && !cat.includes("xray") && !cat.includes("x-ray") && !mod.includes("chest") && !mod.includes("xray") && !title.includes("chest") && !title.includes("xray"));
+
+      if (needsClassification) {
+        const newCategory = isBrainModule ? "MRI" : "X-Ray";
+        const newModality = isBrainModule ? "Brain MRI" : "Chest X-Ray";
+        try {
+          const updatedDoc = await apiClient.documents.updateMetadata(existingDoc.document_id, {
+            category: newCategory,
+            modality: newModality,
+          });
+          if (updatedDoc) {
+            setExistingDoc((prev: any) => ({ ...prev, ...updatedDoc, category: newCategory, modality: newModality }));
+          }
+        } catch (updateErr) {
+          console.warn("Could not synchronize document metadata before analysis:", updateErr);
+        }
       }
 
       setStage(2);
@@ -312,7 +352,7 @@ function AIAnalysisForm() {
         patient_id: existingDoc.patient_id,
         appointment_id: existingDoc.appointment_id || undefined,
         medical_record_id: existingDoc.medical_record_id || undefined,
-        analysis_type: moduleType,
+        analysis_type: targetModule,
         consultation_id: existingDoc.consultation_id || undefined,
       });
       setStage(3);
@@ -473,18 +513,28 @@ function AIAnalysisForm() {
                   </p>
                   <div className="flex items-center gap-1.5 pt-0.5">
                     <span className="text-muted-foreground font-medium">Modality / Category: </span>
-                    <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
-                      {existingDoc.category || "MRI"}
+                    <Badge variant={String(existingDoc.category || "").toLowerCase() === "other" ? "outline" : "secondary"} className="text-[10px] uppercase font-semibold">
+                      {existingDoc.modality || existingDoc.category || "MRI"}
                     </Badge>
                   </div>
-                  <p>
-                    <span className="text-muted-foreground font-medium">AI Module: </span>
-                    <span className="font-semibold text-primary">
-                      {String(existingDoc.category || "").toLowerCase().includes("chest") || String(existingDoc.category || "").toLowerCase().includes("xray") || String(existingDoc.title || "").toLowerCase().includes("chest")
-                        ? "Chest X-Ray Pneumonia Classification"
-                        : "Brain MRI Tumor Classification"}
-                    </span>
-                  </p>
+                  <div className="space-y-1.5 pt-1 border-t border-border/50">
+                    <Label className="text-xs font-semibold text-foreground">Target AI Module / Modality</Label>
+                    <Select value={selectedModule} onValueChange={(val: "BRAIN_MRI" | "CHEST_XRAY") => setSelectedModule(val)}>
+                      <SelectTrigger className="h-8 text-xs font-medium">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="BRAIN_MRI">Brain MRI Tumor Classification (ResNet50)</SelectItem>
+                        <SelectItem value="CHEST_XRAY">Chest X-Ray Pneumonia Classification (ResNet50)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {String(existingDoc.category || "").toLowerCase() === "other" && (
+                    <div className="rounded-md border border-amber-500/25 bg-amber-500/10 p-2 text-xs text-amber-800 dark:text-amber-300">
+                      <span className="font-semibold">Notice: </span>
+                      Document was uploaded with category OTHER. Running analysis will automatically confirm and classify this image as {selectedModule === "BRAIN_MRI" ? "Brain MRI" : "Chest X-Ray"}.
+                    </div>
+                  )}
                   <p>
                     <span className="text-muted-foreground font-medium">Model: </span>
                     <span className="font-medium text-foreground">ResNet50 (v1.0.0)</span>

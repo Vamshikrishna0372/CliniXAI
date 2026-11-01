@@ -11,7 +11,37 @@ class DocumentMetadataUpdateRequest(BaseModel):
     """Schema for updating document metadata."""
     title: Optional[str] = Field(None, min_length=2, max_length=200)
     category: Optional[DocumentCategory] = None
+    modality: Optional[str] = Field(None, max_length=100)
     notes: Optional[str] = Field(None, max_length=1000)
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_fields(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            d = dict(data)
+            cat = d.get("category")
+            if isinstance(cat, str):
+                cat_norm = cat.strip().lower().replace("-", "").replace("_", "").replace(" ", "")
+                if cat_norm in ["mri", "brainmri"]:
+                    d["category"] = DocumentCategory.MRI
+                elif cat_norm in ["xray", "chestxray", "cxr"]:
+                    d["category"] = DocumentCategory.XRAY
+                elif cat_norm == "ct":
+                    d["category"] = DocumentCategory.CT
+                elif cat_norm in ["dermoscopy", "skin"]:
+                    d["category"] = DocumentCategory.DERMOSCOPY
+                elif cat_norm in ["fundus", "retina"]:
+                    d["category"] = DocumentCategory.FUNDUS
+                elif cat_norm in ["labreport", "lab"]:
+                    d["category"] = DocumentCategory.LAB_REPORT
+                elif cat_norm in ["prescription", "rx"]:
+                    d["category"] = DocumentCategory.PRESCRIPTION
+                elif cat_norm in ["medicalpdf", "pdf"]:
+                    d["category"] = DocumentCategory.MEDICAL_PDF
+                elif cat_norm == "other":
+                    d["category"] = DocumentCategory.OTHER
+            return d
+        return data
 
 
 class UploaderInfo(BaseModel):
