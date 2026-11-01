@@ -114,7 +114,9 @@ export function GoogleButton({
     if (loading) return;
     setLoading(true);
     isAuthenticatingRef.current = true;
-    initiateOAuthRedirect();
+    setTimeout(() => {
+      initiateOAuthRedirect();
+    }, 60);
   };
 
   // Listen for window blur/focus on desktop to trigger loading when Google popup opens,
