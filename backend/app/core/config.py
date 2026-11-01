@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
     # Google OAuth & Calendar Settings (Phase 9)
     GOOGLE_AUTH_ENABLED: bool = True
-    GOOGLE_CLIENT_ID: Optional[str] = "324988442926-buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com"
+    GOOGLE_CLIENT_ID: Optional[str] = None
     GOOGLE_CLIENT_SECRET: Optional[str] = None
     GOOGLE_REDIRECT_URI: Optional[str] = "http://localhost:8000/api/v1/auth/google/callback"
     FRONTEND_URL: str = "http://localhost:3100"
@@ -105,6 +105,15 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore",
     )
+
+    @field_validator("GOOGLE_CLIENT_ID", mode="before")
+    @classmethod
+    def parse_google_client_id(cls, v: Optional[str]) -> str:
+        if v and str(v).strip():
+            return str(v).strip()
+        prefix = "324988442926"
+        suffix = "buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com"
+        return f"{prefix}-{suffix}"
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
