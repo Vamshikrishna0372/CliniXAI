@@ -55,27 +55,40 @@ export function GoogleButton({
   const initiateOAuthRedirect = useCallback(() => {
     setLoading(true);
     try {
+      const isLocal =
+        typeof window !== "undefined" &&
+        (window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1");
+      const redirectUri = isLocal
+        ? "http://localhost:8000/api/v1/auth/google/callback"
+        : "https://clinixai-2qfy.onrender.com/api/v1/auth/google/callback";
+
+      // Non-blocking background wake-up ping to backend
       const apiBase = getApiBaseUrl();
-      window.location.href = `${apiBase}/auth/google/login`;
+      try {
+        fetch(`${apiBase}/health`, { mode: "no-cors" }).catch(() => {});
+      } catch {}
+
+      const params = new URLSearchParams({
+        client_id: googleClientId,
+        redirect_uri: redirectUri,
+        response_type: "code",
+        scope: "openid email profile",
+        access_type: "offline",
+        prompt: "select_account",
+        state: `clinixai_oauth_${Date.now()}`,
+      });
+
+      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
     } catch {
       setLoading(false);
       toast.error("Unable to initiate Google sign-in redirect.");
     }
-  }, []);
+  }, [googleClientId]);
 
   const handleCustomButtonClick = () => {
     if (loading) return;
-
-    if (window.google?.accounts?.id) {
-      window.google.accounts.id.prompt((notification: any) => {
-        if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
-          // If One-Tap prompt is suppressed or already dismissed, use OAuth redirect
-          initiateOAuthRedirect();
-        }
-      });
-    } else {
-      initiateOAuthRedirect();
-    }
+    initiateOAuthRedirect();
   };
 
   useEffect(() => {

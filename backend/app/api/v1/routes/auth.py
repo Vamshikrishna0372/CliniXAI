@@ -241,6 +241,7 @@ async def google_auth_callback_get(
     request: Request,
     response: Response,
     code: Optional[str] = None,
+    state: Optional[str] = None,
     error: Optional[str] = None,
     db: AsyncIOMotorDatabase = Depends(get_database),
 ):
@@ -260,8 +261,24 @@ async def google_auth_callback_get(
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
+    if state and not GoogleAuthService.verify_oauth_state(state):
+        logger.warning(f"Google OAuth callback invalid state: {state}")
+        return RedirectResponse(
+            url=f"{frontend_url}/auth/login?error=Invalid+or+expired+OAuth+session.+Please+try+again.",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
     try:
-        req_redirect_uri = str(request.url).split("?")[0]
+        host = request.headers.get("host", "").lower()
+        if "onrender.com" in host or "clinixai" in host:
+            req_redirect_uri = "https://clinixai-2qfy.onrender.com/api/v1/auth/google/callback"
+        elif settings.GOOGLE_REDIRECT_URI:
+            req_redirect_uri = settings.GOOGLE_REDIRECT_URI
+        else:
+            req_redirect_uri = str(request.url).split("?")[0]
+            if request.headers.get("x-forwarded-proto") == "https" and req_redirect_uri.startswith("http://"):
+                req_redirect_uri = "https://" + req_redirect_uri[7:]
+
         token_data = await GoogleAuthService.exchange_code_for_tokens(code, req_redirect_uri)
         id_token = token_data.get("id_token")
         if not id_token:
@@ -325,6 +342,7 @@ async def google_auth_login_redirect(request: Request):
         "scope": "openid email profile",
         "access_type": "offline",
         "prompt": "select_account",
+        "state": GoogleAuthService.generate_oauth_state(),
     }
     google_oauth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
     return RedirectResponse(url=google_oauth_url, status_code=status.HTTP_303_SEE_OTHER)

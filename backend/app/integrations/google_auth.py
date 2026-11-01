@@ -35,6 +35,30 @@ class GoogleAuthService:
         return bool(settings.GOOGLE_AUTH_ENABLED and settings.GOOGLE_CLIENT_ID)
 
     @classmethod
+    def generate_oauth_state(cls) -> str:
+        """Generates a cryptographically signed, stateless OAuth state parameter."""
+        import jwt, time, secrets
+        payload = {
+            "type": "google_oauth_state",
+            "exp": int(time.time()) + 900,
+            "nonce": secrets.token_hex(16),
+        }
+        return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
+
+    @classmethod
+    def verify_oauth_state(cls, state: Optional[str]) -> bool:
+        """Verifies cryptographically signed OAuth state parameter statelessly."""
+        if not state:
+            return True
+        try:
+            import jwt
+            data = jwt.decode(state, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+            return data.get("type") == "google_oauth_state"
+        except Exception as e:
+            logger.warning(f"OAuth state validation failed: {e}")
+            return False
+
+    @classmethod
     async def exchange_code_for_tokens(
         cls,
         code: str,
@@ -48,7 +72,7 @@ class GoogleAuthService:
 
         redirect_uri = redirect_uri or settings.GOOGLE_REDIRECT_URI
 
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(
                 "https://oauth2.googleapis.com/token",
                 data={
@@ -62,7 +86,7 @@ class GoogleAuthService:
             )
             if resp.status_code != 200:
                 logger.error(f"Google token exchange failed ({resp.status_code}): {resp.text}")
-                raise UnauthorizedError(f"Failed to exchange authorization code with Google.")
+                raise UnauthorizedError(f"Failed to exchange authorization code with Google: {resp.text}")
             
             return resp.json()
 

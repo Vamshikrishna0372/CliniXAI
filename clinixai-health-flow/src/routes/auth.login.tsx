@@ -19,12 +19,18 @@ export const Route = createFileRoute("/auth/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { signIn, isAuthenticated, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated || user) {
+      navigate({ to: "/app" });
+    }
+  }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

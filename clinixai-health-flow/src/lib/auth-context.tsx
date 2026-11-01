@@ -99,12 +99,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   const restoreSession = useCallback(async (): Promise<User | null> => {
+    let isGoogleSuccess = false;
     // Check URL parameters for Google OAuth redirect callback tokens
     if (typeof window !== "undefined") {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const urlAccessToken = urlParams.get("access_token");
         const urlRefreshToken = urlParams.get("refresh_token");
+        if (urlParams.get("google_success") === "true" || (urlAccessToken && urlRefreshToken)) {
+          isGoogleSuccess = true;
+        }
         if (urlAccessToken && urlRefreshToken) {
           setStoredTokens({ accessToken: urlAccessToken, refreshToken: urlRefreshToken });
           // Strip sensitive tokens from URL history cleanly
@@ -132,6 +136,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const parsedUser = parseUserFromBackend(bUser);
       setUser(parsedUser);
       setHydrated(true);
+      if (isGoogleSuccess && typeof window !== "undefined" && window.location.pathname.includes("/auth")) {
+        window.location.replace("/app");
+      }
       return parsedUser;
     } catch (err: any) {
       if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
