@@ -37,11 +37,13 @@ clinixai-health-flow/node_modules/
 .wrangler/
 
 # ── AI / ML model artifacts ───────────
-*.keras
 *.h5
 *.pt
 *.onnx
-ai_models/
+backend/ai_models/chest_xray_model_best.keras
+!backend/ai_models/
+!backend/ai_models/*.keras
+!backend/ai_models/*.json
 
 # ── Uploads ───────────────────────────
 uploads/

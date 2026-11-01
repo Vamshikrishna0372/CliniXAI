@@ -1,0 +1,43 @@
+{
+  "module_id": "CHEST_XRAY",
+  "module_slug": "chest",
+  "model_name": "Chest X-Ray Analysis",
+  "modality": "Chest X-Ray (Radiography)",
+  "architecture": "ResNet50",
+  "model_version": "1.0.0",
+  "input_size": [
+    224,
+    224
+  ],
+  "num_channels": 3,
+  "preprocessing_method": "resnet50",
+  "class_names": [
+    "NORMAL",
+    "PNEUMONIA"
+  ],
+  "number_of_classes": 2,
+  "classification_type": "multiclass",
+  "export_timestamp": "2026-10-23T09:41:47.324498+00:00",
+  "gradcam_target_layer": "conv5_block3_out",
+  "decision_threshold": 0.5,
+  "test_metrics": {
+    "accuracy": 0.9006410241127014,
+    "loss": 0.30460092425346375
+  },
+  "clinical_safety_notice": "CliniXAI AI analysis is intended for clinical decision support only. AI-generated results must be interpreted by a qualified healthcare professional and must not be used as an independent diagnosis.",
+  "model_sha256": "6280d0820a62eb730dff084cbffc260a45ba13a45a51193bb0c450393f4009b3",
+  "best_epoch": 3,
+  "validation_metrics": {
+    "val_accuracy": 1.0,
+    "val_loss": 0.07519549876451492
+  },
+  "preprocessing_configuration": {
+    "input_size": [
+      224,
+      224
+    ],
+    "num_channels": 3,
+    "preprocessing_fn": "resnet50",
+    "augment_horizontal_flip": false
+  }
+}

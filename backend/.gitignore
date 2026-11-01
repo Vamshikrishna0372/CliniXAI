@@ -52,6 +52,12 @@ uploads/*
 !uploads/.gitkeep
 ai_models/*
 !ai_models/.gitkeep
+!ai_models/brain_model.keras
+!ai_models/brain_metadata.json
+!ai_models/brain_class_names.json
+!ai_models/chest_model.keras
+!ai_models/chest_metadata.json
+!ai_models/chest_class_names.json
 
 # Operating system files
 .DS_Store
