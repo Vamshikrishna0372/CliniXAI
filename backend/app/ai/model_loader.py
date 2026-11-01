@@ -70,9 +70,6 @@ class ModelLoader:
         # Promote any available trained per-module model artifacts
         self._check_and_promote_all_artifacts()
 
-        # Initial load attempt for enabled modules
-        self.load_all_enabled()
-
     def _check_and_promote_all_artifacts(self) -> None:
         """Check per-module outputs in model-training/ and safely promote to backend/ai_models/."""
         project_root = self.backend_dir.parent
@@ -147,7 +144,7 @@ class ModelLoader:
                 except Exception:
                     pass
 
-    def load_module(self, identifier: str) -> LoadedModuleArtifacts:
+    def load_module(self, identifier: str, load_weights: bool = True) -> LoadedModuleArtifacts:
         """Load or retrieve cached model artifacts for a given module identifier."""
         norm_id = self.registry.normalize_identifier(identifier)
         mod_cfg = self.registry.get_module(norm_id)
@@ -155,9 +152,10 @@ class ModelLoader:
         with self._lock:
             if norm_id in self._module_cache:
                 cached = self._module_cache[norm_id]
-                # If already available or failed, return cached
+                # If already available or failed, check if we need to load weights
                 if cached.status in {"available", "initialization_failed"}:
-                    return cached
+                    if not load_weights or cached.model is not None:
+                        return cached
             else:
                 cached = LoadedModuleArtifacts(mod_cfg)
                 self._module_cache[norm_id] = cached
@@ -193,13 +191,27 @@ class ModelLoader:
                 with open(class_map_path, "r", encoding="utf-8") as f:
                     cached.class_names = json.load(f)
 
-            # Load Keras Model
-            import tensorflow as tf
-            cached.model = tf.keras.models.load_model(str(model_path))
+            if load_weights and cached.model is None:
+                # Single-model memory management: release any other model from RAM to keep memory within 512MB
+                import gc
+                for other_id, other_art in list(self._module_cache.items()):
+                    if other_id != norm_id and other_art.model is not None:
+                        other_art.model = None
+                try:
+                    import tensorflow as tf
+                    tf.keras.backend.clear_session()
+                except Exception:
+                    pass
+                gc.collect()
+
+                # Load Keras Model
+                import tensorflow as tf
+                cached.model = tf.keras.models.load_model(str(model_path), compile=False)
 
             cached.status = "available"
             cached.error_message = None
-            logger.info("AI Subsystem: Successfully loaded model for module %s (%s)", norm_id, mod_cfg.display_name)
+            if cached.model is not None:
+                logger.info("AI Subsystem: Successfully loaded model for module %s (%s)", norm_id, mod_cfg.display_name)
 
         except Exception as e:
             cached.status = "initialization_failed"
@@ -208,10 +220,10 @@ class ModelLoader:
 
         return cached
 
-    def load_all_enabled(self) -> None:
-        """Attempt to load all enabled registered modules."""
+    def load_all_enabled(self, load_weights: bool = False) -> None:
+        """Attempt to verify/load all enabled registered modules."""
         for mod_cfg in self.registry.list_modules(enabled_only=True):
-            self.load_module(mod_cfg.module_id)
+            self.load_module(mod_cfg.module_id, load_weights=load_weights)
 
     # ── Backward Compatibility Properties (Defaults to CHEST_XRAY) ────────────
     @property
@@ -268,8 +280,8 @@ class ModelLoader:
         any_available = False
 
         for mod_cfg in self.registry.list_modules(enabled_only=False):
-            art = self.load_module(mod_cfg.module_id)
-            if art.is_available:
+            art = self.load_module(mod_cfg.module_id, load_weights=False)
+            if art.status == "available":
                 any_available = True
 
             modules_health[mod_cfg.module_id] = {
@@ -277,12 +289,12 @@ class ModelLoader:
                 "display_name": mod_cfg.display_name,
                 "modality": mod_cfg.modality,
                 "status": art.status,
-                "model_loaded": art.is_available,
+                "model_loaded": art.status == "available",
                 "model_filename": mod_cfg.model_filename,
                 "architecture": art.metadata.get("architecture", mod_cfg.architecture),
                 "version": art.metadata.get("model_version", mod_cfg.version),
                 "classification_mode": mod_cfg.classification_mode.value,
-                "message": art.error_message or "Operational" if art.is_available else art.error_message or "Model not trained/available",
+                "message": "Operational" if art.status == "available" else art.error_message or "Model not trained/available",
             }
 
         overall_status = "available" if any_available else "unavailable"

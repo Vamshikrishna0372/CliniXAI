@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                 import asyncio
                 from app.ai.model_loader import get_model_loader
                 loader = await asyncio.to_thread(get_model_loader)
-                logger.info("AI Subsystem: Brain MRI model preloaded successfully into memory.")
+                logger.info("AI Subsystem: Initialized ModelLoader successfully.")
             except Exception as ai_e:
                 logger.warning("AI Subsystem model preload deferred: %s", ai_e)
         import asyncio

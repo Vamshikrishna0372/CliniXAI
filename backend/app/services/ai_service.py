@@ -66,7 +66,7 @@ class AIService:
         results: List[AIModuleInfoResponse] = []
 
         for mod_cfg in registry.list_modules(enabled_only=False):
-            art = loader.load_module(mod_cfg.module_id)
+            art = loader.load_module(mod_cfg.module_id, load_weights=False)
             classes = art.class_names if hasattr(art, "class_names") and art.class_names else mod_cfg.class_names
             results.append(
                 AIModuleInfoResponse(
