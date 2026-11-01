@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Role } from "./roles";
 import { apiClient, getStoredTokens, setStoredTokens, ApiError } from "./api-client";
@@ -137,6 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(parsedUser);
       setHydrated(true);
       if (isGoogleSuccess && typeof window !== "undefined" && window.location.pathname.includes("/auth")) {
+        toast.success(`Welcome, ${parsedUser.fullName || parsedUser.firstName}!`);
         window.location.replace("/app");
       }
       return parsedUser;

@@ -293,3 +293,42 @@ class TestGoogleAuthAcceptance:
             assert "redirect_uri=" in redirect_location
             assert "scope=openid" in redirect_location
 
+    # 9. Google OAuth Callback with Frontend Timestamped State
+    @patch("app.integrations.google_auth.GoogleAuthService.verify_google_id_token")
+    @patch("app.integrations.google_auth.GoogleAuthService.exchange_code_for_tokens")
+    async def test_google_callback_frontend_state_success(self, mock_exchange, mock_verify):
+        """GET /auth/google/callback with valid code and frontend timestamped state succeeds and redirects with tokens."""
+        import time
+        db = get_db()
+        test_email = "mobile.oauth.test@gmail.com"
+        test_sub = "google_sub_mobile_9999"
+
+        await db[COLLECTION_USERS].delete_many({"email": test_email})
+        await db[COLLECTION_PATIENTS].delete_many({"email": test_email})
+
+        mock_exchange.return_value = {
+            "id_token": "valid_mock_id_token",
+            "access_token": "mock_google_access",
+        }
+        mock_verify.return_value = {
+            "google_sub": test_sub,
+            "email": test_email,
+            "full_name": "Mobile Google Patient",
+            "picture": None,
+        }
+
+        ts_now = int(time.time() * 1000)
+        state = f"clinixai_oauth_{ts_now}"
+
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            resp = await client.get(f"/api/v1/auth/google/callback?code=mock_auth_code&state={state}", follow_redirects=False)
+            assert resp.status_code in [302, 303, 307]
+            redirect_location = resp.headers.get("location", "")
+            assert "google_success=true" in redirect_location
+            assert "access_token=" in redirect_location
+            assert "refresh_token=" in redirect_location
+
+        await db[COLLECTION_USERS].delete_many({"email": test_email})
+        await db[COLLECTION_PATIENTS].delete_many({"email": test_email})
+

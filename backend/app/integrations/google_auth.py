@@ -50,6 +50,21 @@ class GoogleAuthService:
         """Verifies cryptographically signed OAuth state parameter statelessly."""
         if not state:
             return True
+        # Allow timestamped frontend OAuth states: clinixai_oauth_<timestamp>
+        if state.startswith("clinixai_oauth_"):
+            try:
+                import time
+                ts_str = state.replace("clinixai_oauth_", "").split("_")[0]
+                ts_ms = int(ts_str)
+                ts_sec = ts_ms / 1000.0 if ts_ms > 1e11 else float(ts_ms)
+                if abs(time.time() - ts_sec) < 900:
+                    return True
+                logger.warning(f"OAuth timestamp expired: {state}")
+                return False
+            except Exception as e:
+                logger.warning(f"Failed parsing frontend OAuth state: {e}")
+                return False
+
         try:
             import jwt
             data = jwt.decode(state, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])

@@ -13,6 +13,15 @@ declare global {
   }
 }
 
+function isMobileDevice(): boolean {
+  if (typeof window === "undefined" || typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile/i.test(ua);
+  const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth <= 768;
+  return isMobileUA || (isSmallScreen && isTouch);
+}
+
 export function GoogleButton({
   label = "Continue with Google",
   onDone,
@@ -22,6 +31,7 @@ export function GoogleButton({
 }) {
   const navigate = useNavigate();
   const { signInWithGoogle } = useAuth();
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [gisReady, setGisReady] = useState(false);
   const googleBtnContainerRef = useRef<HTMLDivElement>(null);
@@ -33,6 +43,11 @@ export function GoogleButton({
   const googleClientId =
     (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim() ||
     "324988442926-buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com";
+
+  // Check device type on client mount
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
 
   const handleCredentialResponse = useCallback(
     async (response: { credential?: string }) => {
@@ -61,6 +76,7 @@ export function GoogleButton({
 
   const initiateOAuthRedirect = useCallback(() => {
     setLoading(true);
+    isAuthenticatingRef.current = true;
     try {
       const isLocal =
         typeof window !== "undefined" &&
@@ -86,7 +102,7 @@ export function GoogleButton({
         state: `clinixai_oauth_${Date.now()}`,
       });
 
-      window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+      window.location.assign(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
     } catch {
       setLoading(false);
       isAuthenticatingRef.current = false;
@@ -96,14 +112,16 @@ export function GoogleButton({
 
   const handleCustomButtonClick = () => {
     if (loading) return;
-    isAuthenticatingRef.current = true;
     setLoading(true);
+    isAuthenticatingRef.current = true;
     initiateOAuthRedirect();
   };
 
-  // Listen for window blur/focus to trigger loading when Google popup opens,
+  // Listen for window blur/focus on desktop to trigger loading when Google popup opens,
   // and safely restore idle state if the popup is closed or cancelled.
   useEffect(() => {
+    if (isMobile) return;
+
     const handleWindowBlur = () => {
       if (isHoveredRef.current && !loading) {
         setLoading(true);
@@ -134,9 +152,15 @@ export function GoogleButton({
       if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
       if (focusTimeoutRef.current) clearTimeout(focusTimeoutRef.current);
     };
-  }, [loading]);
+  }, [isMobile, loading]);
 
   useEffect(() => {
+    // On mobile devices, do not initialize GIS popup iframe to prevent accounts.google.com/gsi/transform blank page
+    if (isMobile) {
+      setGisReady(false);
+      return;
+    }
+
     let isMounted = true;
 
     const initGis = () => {
@@ -166,7 +190,6 @@ export function GoogleButton({
         }
         setGisReady(true);
       } catch (err) {
-        // Silently catch GIS init errors and rely on accessible button
         setGisReady(false);
       }
     };
@@ -200,34 +223,33 @@ export function GoogleButton({
     return () => {
       isMounted = false;
     };
-  }, [googleClientId, handleCredentialResponse]);
+  }, [isMobile, googleClientId, handleCredentialResponse]);
 
   return (
     <div className="w-full relative min-h-[44px]">
-      {/* Container for official Google Identity Services rendered button */}
-      <div
-        ref={googleBtnContainerRef}
-        onPointerEnter={() => {
-          isHoveredRef.current = true;
-        }}
-        onPointerLeave={() => {
-          isHoveredRef.current = false;
-        }}
-        onPointerDown={() => {
-          isHoveredRef.current = true;
-        }}
-        onTouchStart={() => {
-          isHoveredRef.current = true;
-        }}
-        className={`w-full flex justify-center transition-opacity duration-150 ${
-          gisReady
-            ? loading
-              ? "opacity-0 pointer-events-none absolute inset-0 -z-10"
-              : "opacity-100"
-            : "hidden"
-        }`}
-        style={{ minHeight: "44px" }}
-      />
+      {/* Official GIS container rendered only for Desktop */}
+      {!isMobile && (
+        <div
+          ref={googleBtnContainerRef}
+          onPointerEnter={() => {
+            isHoveredRef.current = true;
+          }}
+          onPointerLeave={() => {
+            isHoveredRef.current = false;
+          }}
+          onPointerDown={() => {
+            isHoveredRef.current = true;
+          }}
+          className={`w-full flex justify-center transition-opacity duration-150 ${
+            gisReady
+              ? loading
+                ? "opacity-0 pointer-events-none absolute inset-0 -z-10"
+                : "opacity-100"
+              : "hidden"
+          }`}
+          style={{ minHeight: "44px" }}
+        />
+      )}
 
       {/* Immediate visible loading state replacing button during authentication */}
       {loading && (
@@ -243,8 +265,8 @@ export function GoogleButton({
         </Button>
       )}
 
-      {/* Accessible fallback & interactive button matching CliniXAI theme */}
-      {!gisReady && !loading && (
+      {/* Mobile button and desktop fallback button matching CliniXAI theme */}
+      {(isMobile || !gisReady) && !loading && (
         <Button
           type="button"
           variant="outline"

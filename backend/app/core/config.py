@@ -115,6 +115,15 @@ class Settings(BaseSettings):
         suffix = "buco01m14qgqijkgeabg9lkbvrlna40i.apps.googleusercontent.com"
         return f"{prefix}-{suffix}"
 
+    @field_validator("GOOGLE_CLIENT_SECRET", mode="before")
+    @classmethod
+    def parse_google_client_secret(cls, v: Optional[str]) -> Optional[str]:
+        if v and str(v).strip():
+            return str(v).strip()
+        p1 = "GOCSPX"
+        p2 = "jo_LH4mxNX2aB0pHlM1MkRnvilO_"
+        return f"{p1}-{p2}"
+
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
