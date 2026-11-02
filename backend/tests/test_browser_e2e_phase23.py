@@ -29,27 +29,12 @@ async def perform_login(page: Page, email: str, password: str):
     """Canonical login helper supporting both demo shortcuts and sequential typing."""
     await page.goto(f"{BASE_FRONTEND_URL}/auth/login", wait_until="networkidle")
     
-    role_map = {
-        "admin@clinixai.com": "Primary (admin)",
-        "doctor.arjun@clinixai.com": "Arjun (doctor)",
-        "staff.one@clinixai.com": "Staff (staff)",
-        "patient.one@clinixai.com": "Patient (patient)",
-    }
-    demo_label = role_map.get(email)
+    email_inp = page.locator("input#email")
+    await email_inp.wait_for(state="visible", timeout=10000)
+    await email_inp.fill(email)
     
-    if demo_label:
-        demo_btn = page.locator(f'button:has-text("{demo_label}")')
-        await demo_btn.wait_for(state="visible", timeout=10000)
-        await demo_btn.click()
-    else:
-        email_inp = page.locator("input#email")
-        await email_inp.wait_for(state="visible", timeout=10000)
-        await email_inp.click()
-        await email_inp.press_sequentially(email, delay=15)
-        
-        pass_inp = page.locator("input#password")
-        await pass_inp.click()
-        await pass_inp.press_sequentially(password, delay=15)
+    pass_inp = page.locator("input#password")
+    await pass_inp.fill(password)
         
     submit_btn = page.locator('button[type="submit"]:not([disabled])')
     await submit_btn.wait_for(state="visible", timeout=5000)
