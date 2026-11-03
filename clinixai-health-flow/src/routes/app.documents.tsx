@@ -184,13 +184,24 @@ function DocumentsPage() {
         fd.append("file", f);
 
         const createdDoc = await apiClient.documents.upload(fd);
+        const resolvedRole = (createdDoc.uploader_role || createdDoc.uploaded_by_role || user?.role || "patient").toLowerCase().replace("userrole.", "");
+        const appRole: "patient" | "doctor" | "staff" = resolvedRole.includes("patient")
+          ? "patient"
+          : resolvedRole.includes("doctor")
+          ? "doctor"
+          : "staff";
+
         uploadDocument({
           id: createdDoc.document_id,
           patientId: createdDoc.patient_id,
           name: createdDoc.title || createdDoc.original_file_name,
           category: effectiveCat,
           fileType: fileTypeFrom(createdDoc.original_file_name),
-          uploadedBy: user?.role === "patient" ? "patient" : user?.role === "doctor" ? "doctor" : "staff",
+          uploadedBy: appRole,
+          uploaderRole: resolvedRole,
+          uploadedByRole: resolvedRole,
+          uploaderName: createdDoc.uploader_name || user?.fullName || (user ? `${user.firstName} ${user.lastName}`.trim() : undefined),
+          uploaderUserId: createdDoc.uploaded_by_user_id || createdDoc.uploaded_by || user?.id,
           sizeKb: Math.max(1, Math.round((createdDoc.file_size_bytes || f.size) / 1024)),
         });
         successCount++;

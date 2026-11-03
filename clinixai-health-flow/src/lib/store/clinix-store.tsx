@@ -374,9 +374,33 @@ export function ClinixProvider({ children }: { children: ReactNode }) {
               else if (rawCat.includes("ai")) cat = "AI Report";
               else cat = d.category || "Other";
 
-              const uRoleRaw = (d.uploader?.role || d.uploader_role || (d.uploaded_by?.startsWith("USR-DOC") ? "doctor" : d.uploaded_by?.startsWith("USR-PAT") ? "patient" : "staff")).toLowerCase();
-              const uRole: MedDocument["uploadedBy"] = uRoleRaw === "doctor" ? "doctor" : uRoleRaw === "patient" ? "patient" : "staff";
-              const uName = d.uploader?.name || d.uploader_name || (uRole === "doctor" ? "Doctor" : uRole === "patient" ? "Patient" : "Hospital Staff");
+              const rawRoleStr = String(d.uploaded_by_role || d.uploader_role || d.uploader?.role || "").trim().toLowerCase().replace("userrole.", "");
+              let uRole: MedDocument["uploadedBy"] = "staff";
+              if (rawRoleStr.includes("patient")) {
+                uRole = "patient";
+              } else if (rawRoleStr.includes("doctor")) {
+                uRole = "doctor";
+              } else if (rawRoleStr.includes("admin")) {
+                uRole = "staff";
+              } else if (rawRoleStr.includes("staff")) {
+                uRole = "staff";
+              } else if (d.uploaded_by?.startsWith("USR-DOC")) {
+                uRole = "doctor";
+              } else if (d.uploaded_by?.startsWith("USR-PAT")) {
+                uRole = "patient";
+              }
+
+              const detailedRole = rawRoleStr.includes("patient")
+                ? "patient"
+                : rawRoleStr.includes("doctor")
+                ? "doctor"
+                : rawRoleStr.includes("admin")
+                ? "hospital_admin"
+                : rawRoleStr.includes("staff")
+                ? "staff"
+                : uRole;
+
+              const uName = d.uploader?.name || d.uploader_name || (detailedRole === "doctor" ? "Doctor" : detailedRole === "patient" ? "Patient" : detailedRole === "hospital_admin" ? "Hospital Administrator" : "Hospital Staff");
               const uId = d.uploader?.user_id || d.uploaded_by_user_id || d.uploaded_by;
 
               return {
@@ -388,8 +412,10 @@ export function ClinixProvider({ children }: { children: ReactNode }) {
                 fileType: ft,
                 uploadedBy: uRole,
                 uploaderUserId: uId,
+                uploadedByUserId: uId,
                 uploaderName: uName,
-                uploaderRole: uRole,
+                uploaderRole: detailedRole,
+                uploadedByRole: detailedRole,
                 aiAnalysisId: d.ai_analysis_id || undefined,
                 aiAnalysisStatus: d.ai_analysis_status || undefined,
                 modality: d.modality || (cat.includes("MRI") ? "Brain MRI" : cat.includes("X-Ray") ? "Chest X-Ray" : cat),

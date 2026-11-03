@@ -238,8 +238,18 @@ async def direct_infer(
         else:
             import uuid
             final_doc_id = f"DOC-{uuid.uuid4().hex[:12].upper()}"
-            uploader_role = "doctor" if current_user.role in (UserRole.DOCTOR, UserRole.HOSPITAL_ADMIN, UserRole.ADMIN) else "patient" if current_user.role == UserRole.PATIENT else "staff"
-            uploader_name = getattr(current_user, "full_name", None) or ("Doctor" if uploader_role == "doctor" else "Patient")
+            r_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+            r_str = str(r_val).strip().lower().replace("userrole.", "")
+            if "patient" in r_str:
+                uploader_role = "patient"
+            elif "doctor" in r_str:
+                uploader_role = "doctor"
+            elif "admin" in r_str:
+                uploader_role = "hospital_admin"
+            else:
+                uploader_role = "staff"
+
+            uploader_name = getattr(current_user, "full_name", None) or ("Doctor" if uploader_role == "doctor" else "Patient" if uploader_role == "patient" else "Hospital Staff")
             if uploader_role == "doctor" and "doc" in locals() and doc:
                 uploader_name = doc.get("full_name") or doc.get("name") or uploader_name
             elif uploader_role == "patient" and "pat" in locals() and pat:
@@ -253,6 +263,7 @@ async def direct_infer(
                 "patient_id": canonical_patient_id,
                 "uploaded_by": current_user.user_id,
                 "uploaded_by_user_id": current_user.user_id,
+                "uploaded_by_role": uploader_role,
                 "uploader_role": uploader_role,
                 "uploader_name": uploader_name,
                 "title": f"{mod_cfg.display_name} Scan",

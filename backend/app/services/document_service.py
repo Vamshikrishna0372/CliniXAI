@@ -40,8 +40,10 @@ class DocumentService:
         appointment_id: Optional[str] = None,
         medical_record_id: Optional[str] = None,
         ai_analysis_id: Optional[str] = None,
+        uploader_role: Optional[str] = None,
+        uploader_name: Optional[str] = None,
     ) -> MedicalDocumentInDB:
-        """Validates and stores medical document upload with metadata persistence."""
+        """Validates and stores medical document upload with authoritative metadata persistence."""
         # Defensive check: ensure canonical patient_id is always stored
         if str(patient_id).startswith("USR-"):
             from app.database.collections import COLLECTION_PATIENTS
@@ -58,30 +60,63 @@ class DocumentService:
 
         doc_id = f"DOC-{uuid.uuid4().hex[:12].upper()}"
 
-        # Resolve uploader role and name directly
-        uploader_role = "unknown"
-        uploader_name = "Unknown"
-        if uploaded_by and uploaded_by != "system" and uploaded_by != "None":
-            from app.database.collections import COLLECTION_USERS, COLLECTION_DOCTORS, COLLECTION_PATIENTS, COLLECTION_STAFF
-            user_rec = await self.db[COLLECTION_USERS].find_one({"user_id": uploaded_by})
-            if user_rec:
-                uploader_role = str(user_rec.get("role", "unknown")).lower()
-                uploader_name = user_rec.get("full_name") or user_rec.get("name")
-            if not uploader_name or uploader_role == "unknown":
-                doc_rec = await self.db[COLLECTION_DOCTORS].find_one({"$or": [{"user_id": uploaded_by}, {"doctor_id": uploaded_by}]})
-                if doc_rec:
-                    uploader_role = "doctor"
-                    uploader_name = doc_rec.get("full_name") or doc_rec.get("name") or "Doctor"
-                else:
-                    pat_rec = await self.db[COLLECTION_PATIENTS].find_one({"$or": [{"user_id": uploaded_by}, {"patient_id": uploaded_by}]})
-                    if pat_rec:
-                        uploader_role = "patient"
-                        uploader_name = pat_rec.get("full_name") or f"{pat_rec.get('first_name', '')} {pat_rec.get('last_name', '')}".strip() or "Patient"
+        # Resolve authoritative uploader role and name directly
+        resolved_role = "unknown"
+        resolved_name = "Unknown"
+
+        if uploader_role:
+            r_val = uploader_role.value if hasattr(uploader_role, "value") else str(uploader_role)
+            r_str = str(r_val).strip().lower().replace("userrole.", "")
+            if "patient" in r_str:
+                resolved_role = "patient"
+            elif "doctor" in r_str:
+                resolved_role = "doctor"
+            elif "admin" in r_str:
+                resolved_role = "hospital_admin"
+            elif "staff" in r_str:
+                resolved_role = "staff"
+            else:
+                resolved_role = r_str
+
+        if uploader_name:
+            resolved_name = str(uploader_name).strip()
+
+        if resolved_role == "unknown" or resolved_name == "Unknown":
+            if uploaded_by and uploaded_by not in ("system", "None", ""):
+                from app.database.collections import COLLECTION_USERS, COLLECTION_DOCTORS, COLLECTION_PATIENTS, COLLECTION_STAFF
+                user_rec = await self.db[COLLECTION_USERS].find_one({"user_id": uploaded_by})
+                if user_rec:
+                    raw_r = user_rec.get("role")
+                    if hasattr(raw_r, "value"):
+                        raw_r = raw_r.value
+                    r_str = str(raw_r or "").strip().lower().replace("userrole.", "")
+                    if "patient" in r_str:
+                        resolved_role = "patient"
+                    elif "doctor" in r_str:
+                        resolved_role = "doctor"
+                    elif "admin" in r_str:
+                        resolved_role = "hospital_admin"
+                    elif "staff" in r_str:
+                        resolved_role = "staff"
                     else:
-                        staff_rec = await self.db[COLLECTION_STAFF].find_one({"$or": [{"user_id": uploaded_by}, {"staff_id": uploaded_by}]})
-                        if staff_rec:
-                            uploader_role = "staff"
-                            uploader_name = staff_rec.get("full_name") or staff_rec.get("name") or "Staff"
+                        resolved_role = r_str or "unknown"
+                    resolved_name = user_rec.get("full_name") or user_rec.get("name") or resolved_name
+
+                if resolved_role == "unknown" or resolved_name == "Unknown":
+                    doc_rec = await self.db[COLLECTION_DOCTORS].find_one({"$or": [{"user_id": uploaded_by}, {"doctor_id": uploaded_by}]})
+                    if doc_rec:
+                        resolved_role = "doctor"
+                        resolved_name = doc_rec.get("full_name") or doc_rec.get("name") or "Doctor"
+                    else:
+                        pat_rec = await self.db[COLLECTION_PATIENTS].find_one({"$or": [{"user_id": uploaded_by}, {"patient_id": uploaded_by}]})
+                        if pat_rec:
+                            resolved_role = "patient"
+                            resolved_name = pat_rec.get("full_name") or f"{pat_rec.get('first_name', '')} {pat_rec.get('last_name', '')}".strip() or "Patient"
+                        else:
+                            staff_rec = await self.db[COLLECTION_STAFF].find_one({"$or": [{"user_id": uploaded_by}, {"staff_id": uploaded_by}]})
+                            if staff_rec:
+                                resolved_role = "staff"
+                                resolved_name = staff_rec.get("full_name") or staff_rec.get("name") or "Staff"
 
         modality = "Other"
         if category == DocumentCategory.MRI:
@@ -113,8 +148,9 @@ class DocumentService:
             patient_id=patient_id,
             uploaded_by=uploaded_by,
             uploaded_by_user_id=uploaded_by,
-            uploader_role=uploader_role,
-            uploader_name=uploader_name,
+            uploaded_by_role=resolved_role,
+            uploader_role=resolved_role,
+            uploader_name=resolved_name,
             title=title,
             category=category,
             modality=modality,
@@ -180,16 +216,40 @@ class DocumentService:
         d["uploaded_by"] = uploaded_by or "unknown"
         d["uploaded_by_user_id"] = uploaded_by
 
-        if not d.get("uploader_role") or not d.get("uploader_name") or d.get("uploader_role") == "unknown":
+        current_role = d.get("uploaded_by_role") or d.get("uploader_role")
+        current_name = d.get("uploader_name")
+
+        needs_resolution = (
+            not current_role
+            or not current_name
+            or str(current_role).lower() in ("unknown", "none", "")
+            or "userrole." in str(current_role).lower()
+        )
+
+        if needs_resolution:
             from app.database.collections import COLLECTION_USERS, COLLECTION_DOCTORS, COLLECTION_PATIENTS, COLLECTION_STAFF
             u_role = "unknown"
-            u_name = "Unknown"
-            if uploaded_by and uploaded_by != "system" and uploaded_by != "None":
+            u_name = current_name or "Unknown"
+            if uploaded_by and uploaded_by not in ("system", "None", ""):
                 user_rec = await self.db[COLLECTION_USERS].find_one({"user_id": uploaded_by})
                 if user_rec:
-                    u_role = str(user_rec.get("role", "unknown")).lower()
-                    u_name = user_rec.get("full_name") or user_rec.get("name")
-                if not u_name or u_role == "unknown":
+                    raw_r = user_rec.get("role")
+                    if hasattr(raw_r, "value"):
+                        raw_r = raw_r.value
+                    r_str = str(raw_r or "").strip().lower().replace("userrole.", "")
+                    if "patient" in r_str:
+                        u_role = "patient"
+                    elif "doctor" in r_str:
+                        u_role = "doctor"
+                    elif "admin" in r_str:
+                        u_role = "hospital_admin"
+                    elif "staff" in r_str:
+                        u_role = "staff"
+                    else:
+                        u_role = r_str or "unknown"
+                    u_name = user_rec.get("full_name") or user_rec.get("name") or u_name
+
+                if u_role == "unknown" or u_name == "Unknown":
                     doc_rec = await self.db[COLLECTION_DOCTORS].find_one({"$or": [{"user_id": uploaded_by}, {"doctor_id": uploaded_by}]})
                     if doc_rec:
                         u_role = "doctor"
@@ -205,7 +265,22 @@ class DocumentService:
                                 u_role = "staff"
                                 u_name = staff_rec.get("full_name") or staff_rec.get("name") or "Staff"
             d["uploader_role"] = u_role
+            d["uploaded_by_role"] = u_role
             d["uploader_name"] = u_name
+        else:
+            r_str = str(current_role).strip().lower().replace("userrole.", "")
+            if "patient" in r_str:
+                clean_r = "patient"
+            elif "doctor" in r_str:
+                clean_r = "doctor"
+            elif "admin" in r_str:
+                clean_r = "hospital_admin"
+            elif "staff" in r_str:
+                clean_r = "staff"
+            else:
+                clean_r = r_str
+            d["uploader_role"] = clean_r
+            d["uploaded_by_role"] = clean_r
 
         # Modality
         current_mod = str(d.get("modality") or "").strip()

@@ -143,8 +143,10 @@ export type MedDocument = {
   status: DocumentStatus;
   sizeKb: number;
   uploaderUserId?: string;
+  uploadedByUserId?: string;
   uploaderName?: string;
-  uploaderRole?: "patient" | "staff" | "doctor" | string;
+  uploaderRole?: "patient" | "staff" | "doctor" | "hospital_admin" | string;
+  uploadedByRole?: "patient" | "staff" | "doctor" | "hospital_admin" | string;
   aiAnalysisId?: string;
   aiAnalysisStatus?: string;
   modality?: string;

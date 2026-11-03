@@ -21,9 +21,14 @@ class UserRole(str, Enum):
     def normalize(cls, role_val: Any) -> "UserRole":
         """Normalizes role string/enum to standard UserRole."""
         if isinstance(role_val, cls):
-            role_str = role_val.value
+            return role_val
+        if hasattr(role_val, "value"):
+            role_str = str(role_val.value).strip().lower()
         else:
             role_str = str(role_val).strip().lower()
+
+        if role_str.startswith("userrole."):
+            role_str = role_str.replace("userrole.", "")
 
         if role_str in ("admin", "hospital_admin"):
             return cls.HOSPITAL_ADMIN
@@ -33,7 +38,18 @@ class UserRole(str, Enum):
             return cls.DOCTOR
         elif role_str == "patient":
             return cls.PATIENT
-        return cls(role_str)
+        try:
+            return cls(role_str)
+        except ValueError:
+            if "patient" in role_str:
+                return cls.PATIENT
+            elif "doctor" in role_str or "doc" in role_str:
+                return cls.DOCTOR
+            elif "admin" in role_str:
+                return cls.HOSPITAL_ADMIN
+            elif "staff" in role_str:
+                return cls.HOSPITAL_STAFF
+            return cls.PATIENT
 
 
 class AuthProvider(str, Enum):
@@ -85,5 +101,13 @@ class UserInDB(BaseModel):
     def to_mongo_dict(self) -> Dict[str, Any]:
         """Converts user instance to dictionary format suitable for MongoDB insertion/update."""
         data = self.model_dump()
+        if hasattr(self.role, "value"):
+            data["role"] = self.role.value
+        elif isinstance(self.role, str):
+            data["role"] = str(self.role).strip().lower().replace("userrole.", "")
+        if hasattr(self.auth_provider, "value"):
+            data["auth_provider"] = self.auth_provider.value
+        if hasattr(self.account_status, "value"):
+            data["account_status"] = self.account_status.value
         return data
 

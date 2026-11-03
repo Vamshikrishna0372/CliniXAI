@@ -53,6 +53,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: Optional[str] = None
     GOOGLE_CLIENT_SECRET: Optional[str] = None
     GOOGLE_REDIRECT_URI: Optional[str] = "http://localhost:8000/api/v1/auth/google/callback"
+    GOOGLE_AUTH_CLOCK_SKEW_SECONDS: int = 15
     FRONTEND_URL: str = "http://localhost:3100"
     GOOGLE_CALENDAR_ENABLED: bool = False
     GOOGLE_CALENDAR_REDIRECT_URI: Optional[str] = "http://localhost:5173/calendar/callback"

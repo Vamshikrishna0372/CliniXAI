@@ -105,11 +105,25 @@ async def upload_document(
         if pat_rec and pat_rec.get("patient_id"):
             canonical_patient_id = pat_rec["patient_id"]
 
+    # Authoritative uploader role and name strictly derived from authenticated user
+    r_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+    r_clean = str(r_val).strip().lower().replace("userrole.", "")
+    if "patient" in r_clean:
+        authoritative_role = "patient"
+    elif "doctor" in r_clean:
+        authoritative_role = "doctor"
+    elif "admin" in r_clean:
+        authoritative_role = "hospital_admin"
+    else:
+        authoritative_role = "staff"
+
     content_bytes = await file.read()
     service = DocumentService(db)
     document = await service.upload_document(
         patient_id=canonical_patient_id,
         uploaded_by=current_user.user_id,
+        uploader_role=authoritative_role,
+        uploader_name=current_user.full_name,
         title=title,
         category=category_enum,
         original_filename=file.filename or "document",

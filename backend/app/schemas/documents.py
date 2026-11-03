@@ -57,6 +57,7 @@ class DocumentResponse(BaseModel):
     patient_id: str
     uploaded_by: str
     uploaded_by_user_id: Optional[str] = None
+    uploaded_by_role: Optional[str] = None
     uploader_role: Optional[str] = None
     uploader_name: Optional[str] = None
     uploader: Optional[UploaderInfo] = None
@@ -108,12 +109,46 @@ class DocumentResponse(BaseModel):
                 d["uploaded_by"] = "system"
             if not d.get("uploaded_by_user_id"):
                 d["uploaded_by_user_id"] = d.get("uploaded_by")
-            if not d.get("uploader") and (d.get("uploaded_by") or d.get("uploader_name") or d.get("uploader_role")):
+            if not d.get("uploaded_by") and d.get("uploaded_by_user_id"):
+                d["uploaded_by"] = d.get("uploaded_by_user_id")
+
+            # Clean and normalize uploader role
+            raw_role = d.get("uploaded_by_role") or d.get("uploader_role") or (d.get("uploader", {}).get("role") if isinstance(d.get("uploader"), dict) else None)
+            clean_role = None
+            if raw_role:
+                if hasattr(raw_role, "value"):
+                    raw_role = raw_role.value
+                r_str = str(raw_role).strip().lower().replace("userrole.", "")
+                if "patient" in r_str:
+                    clean_role = "patient"
+                elif "doctor" in r_str:
+                    clean_role = "doctor"
+                elif "admin" in r_str:
+                    clean_role = "hospital_admin"
+                elif "staff" in r_str:
+                    clean_role = "staff"
+                else:
+                    clean_role = r_str
+
+            if clean_role:
+                d["uploaded_by_role"] = clean_role
+                d["uploader_role"] = clean_role
+
+            if not d.get("uploader") and (d.get("uploaded_by") or d.get("uploader_name") or clean_role):
                 d["uploader"] = {
                     "user_id": d.get("uploaded_by_user_id") or d.get("uploaded_by"),
                     "name": d.get("uploader_name") or "Unknown",
-                    "role": d.get("uploader_role") or "unknown",
+                    "role": clean_role or "unknown",
                 }
+            elif d.get("uploader") and isinstance(d.get("uploader"), dict):
+                u = dict(d["uploader"])
+                if clean_role:
+                    u["role"] = clean_role
+                if not u.get("name") and d.get("uploader_name"):
+                    u["name"] = d.get("uploader_name")
+                if not u.get("user_id"):
+                    u["user_id"] = d.get("uploaded_by_user_id") or d.get("uploaded_by")
+                d["uploader"] = u
             if not d.get("file_name"):
                 d["file_name"] = d.get("original_file_name") or "document.bin"
             if not d.get("original_file_name"):

@@ -213,18 +213,35 @@ function AIAnalysisForm() {
     );
   });
 
-  const patientUploadedImages = patientImages.filter((d) => (d.uploaderRole || d.uploadedBy)?.toLowerCase() === "patient");
-  const doctorUploadedImages = patientImages.filter((d) => (d.uploaderRole || d.uploadedBy)?.toLowerCase() === "doctor");
-  const staffUploadedImages = patientImages.filter((d) => (d.uploaderRole || d.uploadedBy)?.toLowerCase() === "staff");
+  const patientUploadedImages = patientImages.filter((d) => {
+    const r = (d.uploaderRole || (d as any).uploadedByRole || d.uploadedBy || "").toLowerCase();
+    return r.includes("patient");
+  });
+  const doctorUploadedImages = patientImages.filter((d) => {
+    const r = (d.uploaderRole || (d as any).uploadedByRole || d.uploadedBy || "").toLowerCase();
+    return r.includes("doctor");
+  });
+  const staffUploadedImages = patientImages.filter((d) => {
+    const r = (d.uploaderRole || (d as any).uploadedByRole || d.uploadedBy || "").toLowerCase();
+    return r.includes("staff") || r.includes("admin");
+  });
 
   const renderImageProvenanceCard = (doc: MedDocument) => {
-    const roleCapitalized = doc.uploaderRole
-      ? doc.uploaderRole.charAt(0).toUpperCase() + doc.uploaderRole.slice(1)
-      : doc.uploadedBy
-      ? doc.uploadedBy.charAt(0).toUpperCase() + doc.uploadedBy.slice(1)
-      : "Unknown";
+    const rawRole = (doc.uploaderRole || (doc as any).uploadedByRole || doc.uploadedBy || "").toLowerCase().replace("userrole.", "");
+    let roleCapitalized = "Unknown";
+    if (rawRole.includes("patient")) {
+      roleCapitalized = "Patient";
+    } else if (rawRole.includes("doctor")) {
+      roleCapitalized = "Doctor";
+    } else if (rawRole.includes("admin")) {
+      roleCapitalized = "Hospital Administrator";
+    } else if (rawRole.includes("staff")) {
+      roleCapitalized = "Staff";
+    } else if (doc.uploaderRole) {
+      roleCapitalized = doc.uploaderRole.charAt(0).toUpperCase() + doc.uploaderRole.slice(1);
+    }
 
-    const uploaderDisplayName = doc.uploaderName || (roleCapitalized === "Doctor" ? "Doctor" : roleCapitalized === "Patient" ? `${patient?.firstName} ${patient?.lastName}` : "Hospital Staff");
+    const uploaderDisplayName = doc.uploaderName || (roleCapitalized === "Doctor" ? "Doctor" : roleCapitalized === "Patient" ? `${patient?.firstName} ${patient?.lastName}` : roleCapitalized === "Hospital Administrator" ? "Hospital Administrator" : "Hospital Staff");
     const modalityDisplay = doc.modality || (doc.category.toLowerCase().includes("mri") ? "Brain MRI" : doc.category.toLowerCase().includes("x-ray") ? "Chest X-Ray" : doc.category);
     const hasAnalysis = Boolean(doc.aiAnalysisId);
     const isSelected = selectedDocId === doc.id;

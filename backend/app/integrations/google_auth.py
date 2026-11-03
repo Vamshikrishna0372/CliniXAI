@@ -58,8 +58,9 @@ class GoogleAuthService:
                 ts_ms = int(ts_str)
                 ts_sec = ts_ms / 1000.0 if ts_ms > 1e11 else float(ts_ms)
                 diff = time.time() - ts_sec
-                # Disallow future timestamps (with 5s clock skew tolerance) and enforce 15m expiration
-                if -5 <= diff < 900:
+                clock_skew = getattr(settings, "GOOGLE_AUTH_CLOCK_SKEW_SECONDS", 15)
+                # Disallow future timestamps (with clock skew tolerance) and enforce 15m expiration
+                if -clock_skew <= diff < 900:
                     return True
                 logger.warning(f"OAuth timestamp expired or out of bounds: diff={diff:.1f}s")
                 return False
@@ -137,8 +138,12 @@ class GoogleAuthService:
             from google.auth.transport import requests
 
             request = requests.Request()
+            clock_skew = getattr(settings, "GOOGLE_AUTH_CLOCK_SKEW_SECONDS", 15)
             claim = id_token.verify_oauth2_token(
-                id_token_str, request, settings.GOOGLE_CLIENT_ID
+                id_token_str,
+                request,
+                audience=settings.GOOGLE_CLIENT_ID,
+                clock_skew_in_seconds=clock_skew,
             )
 
             # Strict issuer validation
@@ -177,8 +182,12 @@ class GoogleAuthService:
                         raise UnauthorizedError("Google ID token issuer is untrusted.")
                     if not (claim.get("email_verified") in [True, "true", "True"]):
                         raise UnauthorizedError("Google account email is not verified.")
-                    if int(claim.get("exp", 0)) < int(time.time()):
+                    clock_skew = getattr(settings, "GOOGLE_AUTH_CLOCK_SKEW_SECONDS", 15)
+                    now_ts = int(time.time())
+                    if int(claim.get("exp", 0)) + clock_skew < now_ts:
                         raise UnauthorizedError("Google ID token has expired. Please sign in again.")
+                    if "iat" in claim and int(claim["iat"]) - clock_skew > now_ts:
+                        raise UnauthorizedError("Google ID token used too early. Check that your computer's clock is set correctly.")
                     return {
                         "google_sub": claim["sub"],
                         "email": claim["email"].lower(),

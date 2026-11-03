@@ -65,7 +65,6 @@ function LoginPage() {
     }
   };
 
-
   return (
     <AuthLayout
       title="Welcome back"
@@ -73,6 +72,7 @@ function LoginPage() {
       footer={<>Don't have an account? <Link to="/auth/register" className="font-medium text-primary hover:underline">Create Account</Link></>}
     >
       <form onSubmit={submit} className="space-y-4" noValidate>
+
         <div className="space-y-2">
           <Label htmlFor="email">Email address</Label>
           <div className="relative">
