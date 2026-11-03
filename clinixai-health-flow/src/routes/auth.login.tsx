@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { PasswordInput } from "@/components/auth/password-input";
 import { GoogleButton } from "@/components/auth/google-button";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth, DEMO_ACCOUNTS } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/auth/login")({
   head: () => ({ meta: [{ title: "Sign in — CliniXAI" }, { name: "description", content: "Sign in to your CliniXAI account." }] }),
@@ -65,6 +65,12 @@ function LoginPage() {
     }
   };
 
+  const fillAccount = (accEmail: string, accPass: string) => {
+    setEmail(accEmail);
+    setPassword(accPass);
+    setError(null);
+  };
+
   return (
     <AuthLayout
       title="Welcome back"
@@ -72,6 +78,25 @@ function LoginPage() {
       footer={<>Don't have an account? <Link to="/auth/register" className="font-medium text-primary hover:underline">Create Account</Link></>}
     >
       <form onSubmit={submit} className="space-y-4" noValidate>
+        {/* Quick Demo Fill Buttons */}
+        <div className="space-y-1.5 rounded-lg border border-border/60 bg-muted/30 p-2.5">
+          <p className="text-xs font-medium text-muted-foreground">Demo Accounts (click to fill):</p>
+          <div className="flex flex-wrap gap-1.5">
+            {DEMO_ACCOUNTS.map((acc) => (
+              <button
+                key={acc.email}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  fillAccount(acc.email, acc.password);
+                }}
+                className="rounded-md border border-border bg-background px-2 py-1 text-xs font-medium text-foreground hover:border-primary hover:text-primary transition-colors"
+              >
+                {acc.firstName} ({acc.role})
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="email">Email address</Label>
